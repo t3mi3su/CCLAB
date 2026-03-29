@@ -1,146 +1,175 @@
-let scanned = [];
-let mydoodle1;
-let mydoodle2;
-let cloudXs = [];
-let cloudYs = [];
-let cloudSpeed = [];
-let curdoodle1 = 0;
-let curdoodle2 = 0;
-let mySound;
+/*
+  Check our the GOAL and the RULES of this exercise at the bottom of this file.
+  
+  After that, follow these steps before you start coding:
 
+  1. rename the dancer class to reflect your name (line 35).
+  2. adjust line 20 to reflect your dancer's name, too.
+  3. run the code and see if a square (your dancer) appears on the canvas.
+  4. start coding your dancer inside the class that has been prepared for you.
+  5. have fun.
+*/
 
-function preload() {
-  for (let i = 1; i <= 3; i++) {
-    scanned.push(loadImage("img_" + i + ".jpg"));
-  }
-  mySound = loadSound("space_journey.mp3");
-}
+let dancer;
 
 function setup() {
-  createCanvas(800, 500);
-  //mySound.play();
-  eraseBg(scanned, 150);
-  mydoodle1 = crop(scanned, 0, 0, 650, 420);
-  mydoodle2 = crop(scanned, 1200, 0, 700, 420);
+  // no adjustments in the setup function needed...
+  let canvas = createCanvas(windowWidth, windowHeight);
+  canvas.parent("p5-canvas-container");
 
-  // multiple instances of same blob
-  for (let i = 0; i < 5; i++) {
-    cloudXs.push(random(0, width)); // random x,y to list 
-    cloudYs.push(random(50, 200));
-    cloudSpeed.push(random(1, 2));
-
-  }
+  // ...except to adjust the dancer's name on the next line:
+  dancer = new TemieDancer(width / 2, height / 2);
 }
 
 function draw() {
-  background(255);
-  //let f = map(mouseX, 0, width/2.5, 0, 255);
-  //tint(f, 100, 200);
-  
- 
-  //smaller bobs of doodle2
-  for (let i = 0; i < 5; i++) {
+  // you don't need to make any adjustments inside the draw loop
+  background(0);
+  drawFloor(); // for reference only
 
-    cloudXs[i] = cloudXs[i] - cloudSpeed[i]; //update
-    //using sin() to make it bob up and dowm, offset
-    let bob = sin((frameCount + i * 20) * 0.05) * 20;
-    let index = floor((frameCount * 0.3) % mydoodle2.length);
+  dancer.update();
+  dancer.display();
+}
 
-    //not to move outside canvas
-    if (cloudXs[i] < -200) {
-      cloudXs[i] = width + 200;
-    }
-    image(mydoodle2[index], cloudXs[i], cloudYs[i] + bob, 150, 100);
+// You only code inside this class.
+// Start by giving the dancer your name, e.g. LeonDancer.
+class TemieDancer {
+  constructor(startX, startY) {
+    this.x = startX;
+    this.y = startY;
+    // add properties for your dancer here:
+    this.headPos = 0;
+    this.wobble = 0;
+    this.size = 8;
+    this.shuffle = 0;
 
   }
 
-  //doodle 1
+  update() {
+    // update properties here to achieve
+    // your dancer's desired moves and behaviour
 
-  image(
-    mydoodle1[curdoodle1],
-    100,
-    100,
-    mydoodle1[0].width * 0.5,
-    mydoodle1[0].height * 0.5
-  );
-  //doodle 2
+    this.headPos = map(sin(frameCount / 10), -1, 1, -12, 12);
+    this.wobble = noise(frameCount * 0.7, noise(frameCount + 0.05)) * 25;
+    this.mouseEye = map(mouseX, 0, width, -10, 10);
+    this.shuffle = sin(frameCount / 2) * 10;
+  }
 
-  image(
-    mydoodle2[curdoodle2],
-    300,
-    100,
-    mydoodle2[0].width * 0.5,
-    mydoodle2[0].height * 0.5
-  );
+  display() {
+    // the push and pop, along with the translate
+    // places your whole dancer object at this.x and this.y.
+    // you may change its position on line 19 to see the effect.
+    push();
+    translate(this.x, this.y);
 
+    // ******** //
+    // ⬇️ draw your dancer from here ⬇️
 
-  curdoodle1 = floor((frameCount / 10) % mydoodle1.length);
-  let d = dist(mouseX, mouseY, 400, 100);
-  //text("hold me!", 400, 80);
-  if (d < 100) {
-    if (!mySound.isPlaying()){
-      mySound.loop();
-    }
-    let volValue = map(mouseY, 0, height, 1.0, 0.0);
-    mySound.setVolume(volValue);
-    let panValue = map(mouseX, 0, width, -1.0, 0.0);
-    mySound.pan(panValue);
+    // randomness - random colors of skeleton
+    // skeleton head, on a bird? dead bird// tomato with legs
+    //transparent movement
+    //sin (-1,1, angle) for first leg part
+    //body and leg up and down movement same
 
-    curdoodle2 = floor(map(sin(frameCount), -1, 1, 0, mydoodle2.length));
-    textFont('Verdana');
-    textStyle(BOLD);
-    textStyle(ITALIC);
-    textSize(30);
-    textAlign(CENTER, CENTER);
+    //legs
+    
+    stroke(255);
+    strokeWeight(6);
+    line(-15, this.headPos + 20, -15 + this.shuffle, 60);
+    line(-15 + this.shuffle, 60, -5 + this.shuffle, 60);
+    
+    line(15, this.headPos + 20, 15 + this.shuffle, 60);
+    line(15 + this.shuffle, 60, 25+ this.shuffle, 60);
+    
+    //line(-10, this.headPos, -10, 50);
+    //line(10, this.headPos, +10, 50);
+
+    //arms
+    strokeWeight(4);
+    noFill();
+    //left
+    line(-40, this.headPos, -60, this.headPos + 10, this.headPos + 15);
+    //right
+    line(40, this.headPos, 60, this.headPos + 10, this.headPos + 15);
+
+    //tomato body
+    fill("#9D0616");
+    stroke("#7E0511");
+    strokeWeight(4);
+    ellipse(0, this.headPos, 80, 65);
+
+    //leafs
+    fill("#2C773D");
+    stroke("#235F30");
+    strokeWeight(4);
+    triangle(
+      -5,
+      this.headPos - 30,
+      -32 + this.wobble,
+      this.headPos - 45,
+      -15,
+      this.headPos - 20
+    );
+    triangle(
+      -10,
+      this.headPos - 25,
+      0,
+      this.headPos - 55 + this.wobble,
+      10,
+      this.headPos - 35
+    );
+    triangle(
+      5,
+      this.headPos - 30,
+      30,
+      this.headPos - 45 + this.wobble,
+      15,
+      this.headPos - 20
+    );
+
+    //eyes
+    fill("black");
+    noStroke();
+    circle(this.mouseEye - 19, this.headPos, this.size);
+    circle(this.mouseEye + 19, this.headPos, this.size);
+
+    // ⬆️ draw your dancer above ⬆️
+    // ******** //
+
+    // the next function draws a SQUARE and CROSS
+    // to indicate the approximate size and the center point
+    // of your dancer.
+    // it is using "this" because this function, too,
+    // is a part if your Dancer object.
+    // comment it out or delete it eventually.
+    this.drawReferenceShapes();
+
+    pop();
+  }
+  drawReferenceShapes() {
+    noFill();
+    stroke(255, 0, 0);
+    line(-5, 0, 5, 0);
+    line(0, -5, 0, 5);
+    stroke(255);
+    rect(-100, -100, 200, 200);
+    fill(255);
     stroke(0);
-    strokeWeight(1);
-    text(" ‧₊˚♪ 𝄞₊˚⊹ hmph! ( ｡ •̀ ᴖ •́ ｡)", 400, 80);
-
-  } else{
-    //text("go away!", 400, 80);
-    mySound.pause();
   }
-  
-
 }
 
-//function mouseDragged(){
-  //if (mySound.isPlaying() == false) {
-   //mySound.loop();
-  //}
-//}
 
-//function mouseReleased(){
-  //mySound.stop()
-//}
 
-//function mousePressed(){
-  //mySound.play();
-//}
-// You shouldn't need to modify these helper functions:
+/*
+GOAL:
+The goal is for you to write a class that produces a dancing being/creature/object/thing. In the next class, your dancer along with your peers' dancers will all dance in the same sketch that your instructor will put together. 
 
-function crop(imgs, x, y, w, h) {
-  let cropped = [];
-  for (let i = 0; i < imgs.length; i++) {
-    cropped.push(imgs[i].get(x, y, w, h));
-  }
-  return cropped;
-}
-
-function eraseBg(imgs, threshold = 10) {
-  for (let i = 0; i < imgs.length; i++) {
-    let img = imgs[i];
-    img.loadPixels();
-    for (let j = 0; j < img.pixels.length; j += 4) {
-      let d = 255 - img.pixels[j];
-      d += 255 - img.pixels[j + 1];
-      d += 255 - img.pixels[j + 2];
-      if (d < threshold) {
-        img.pixels[j + 3] = 0;
-      }
-    }
-    img.updatePixels();
-  }
-  // this function uses the pixels array
-  // we will cover this later in the semester - stay tuned
-}
+RULES:
+For this to work you need to follow one rule: 
+  - Only put relevant code into your dancer class; your dancer cannot depend on code outside of itself (like global variables or functions defined outside)
+  - Your dancer must perform by means of the two essential methods: update and display. Don't add more methods that require to be called from outside (e.g. in the draw loop).
+  - Your dancer will always be initialized receiving two arguments: 
+    - startX (currently the horizontal center of the canvas)
+    - startY (currently the vertical center of the canvas)
+  beside these, please don't add more parameters into the constructor function 
+  - lastly, to make sure our dancers will harmonize once on the same canvas, please don't make your dancer bigger than 200x200 pixels. 
+*/
