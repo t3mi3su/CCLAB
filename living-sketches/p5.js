@@ -1,4 +1,4 @@
-/*! p5.js v1.11.9 July 17, 2025 */
+/*! p5.js v1.11.11 October 20, 2025 */
 (function (f) {
   if (typeof exports === 'object' && typeof module !== 'undefined') {
     module.exports = f()
@@ -1504,22 +1504,22 @@
               'params': [
                 {
                   'name': 'a',
-                  'description': '<p>coordinate of first control point.</p>\n',
-                  'type': 'Number'
-                },
-                {
-                  'name': 'b',
                   'description': '<p>coordinate of first anchor point.</p>\n',
                   'type': 'Number'
                 },
                 {
+                  'name': 'b',
+                  'description': '<p>coordinate of first control point.</p>\n',
+                  'type': 'Number'
+                },
+                {
                   'name': 'c',
-                  'description': '<p>coordinate of second anchor point.</p>\n',
+                  'description': '<p>coordinate of second control point.</p>\n',
                   'type': 'Number'
                 },
                 {
                   'name': 'd',
-                  'description': '<p>coordinate of second control point.</p>\n',
+                  'description': '<p>coordinate of second anchor point.</p>\n',
                   'type': 'Number'
                 },
                 {
@@ -1709,22 +1709,22 @@
               'params': [
                 {
                   'name': 'a',
-                  'description': '<p>coordinate of first anchor point.</p>\n',
-                  'type': 'Number'
-                },
-                {
-                  'name': 'b',
                   'description': '<p>coordinate of first control point.</p>\n',
                   'type': 'Number'
                 },
                 {
+                  'name': 'b',
+                  'description': '<p>coordinate of first anchor point.</p>\n',
+                  'type': 'Number'
+                },
+                {
                   'name': 'c',
-                  'description': '<p>coordinate of second control point.</p>\n',
+                  'description': '<p>coordinate of second anchor point.</p>\n',
                   'type': 'Number'
                 },
                 {
                   'name': 'd',
-                  'description': '<p>coordinate of second anchor point.</p>\n',
+                  'description': '<p>coordinate of second control point.</p>\n',
                   'type': 'Number'
                 },
                 {
@@ -2842,7 +2842,7 @@
                 {
                   'name': 'event',
                   'description': '<p>optional resize Event.</p>\n',
-                  'type': 'UIEvent',
+                  'type': 'Event',
                   'optional': true
                 }
               ],
@@ -53305,7 +53305,15 @@
         //updates gridOutput
 
         _main.default.prototype._updateGridOutput = function (idT) {
-          //if html structure is not there yet
+          // Check if the current rendering mode is WEBGL
+          if (this._renderer && this._renderer instanceof _main.default.RendererGL) {
+            if (!this._didOutputGridWebGLMessage) {
+              this._didOutputGridWebGLMessage = true;
+              console.error('gridOutput() does not yet work in WebGL mode.');
+            }
+            return;
+          }          //if html structure is not there yet
+
           if (!this.dummyDOM.querySelector('#'.concat(idT, '_summary'))) {
             return;
           }
@@ -53520,6 +53528,15 @@
  * <a href="https://p5js.org/tutorials/writing-accessible-canvas-descriptions/">Writing accessible canvas descriptions</a>
  * to learn more about making sketches accessible.
  *
+ * `textOutput()` generates descriptions in English only. Text drawn with
+ * <a href="#/p5/text">text()</a> is not described. Shapes created with
+ * <a href="#/p5/beginShape">beginShape()</a> are not described. WEBGL mode
+ * and 3D shapes are not supported.
+ *
+ * Use <a href="#/p5/describe">describe()</a> and
+ * <a href="#/p5/describeElement">describeElement()</a> for more control
+ * over canvas descriptions.
+ *
  * @method textOutput
  * @param  {Constant} [display] either FALLBACK or LABEL.
  *
@@ -53565,6 +53582,10 @@
  *
  * <div>
  * <code>
+ * function setup() {
+ *   createCanvas(100, 100);
+ * }
+ *
  * function draw() {
  *   // Add the text description.
  *   textOutput();
@@ -53585,6 +53606,10 @@
  *
  * <div>
  * <code>
+ * function setup() {
+ *   createCanvas(100, 100);
+ * }
+ *
  * function draw() {
  *   // Add the text description and
  *   // display it for debugging.
@@ -53654,6 +53679,15 @@
  * <a href="https://p5js.org/tutorials/writing-accessible-canvas-descriptions/">Writing accessible canvas descriptions</a>
  * to learn more about making sketches accessible.
  *
+ * `gridOutput()` generates descriptions in English only. Text drawn with
+ * <a href="#/p5/text">text()</a> is not described. Shapes created with
+ * <a href="#/p5/beginShape">beginShape()</a> are not described. WEBGL mode
+ * and 3D shapes are not supported.
+ *
+ * Use <a href="#/p5/describe">describe()</a> and
+ * <a href="#/p5/describeElement">describeElement()</a> for more control
+ * over canvas descriptions.
+ *
  * @method gridOutput
  * @param  {Constant} [display] either FALLBACK or LABEL.
  *
@@ -53699,6 +53733,10 @@
  *
  * <div>
  * <code>
+ * function setup() {
+ *   createCanvas(100, 100);
+ * }
+ *
  * function draw() {
  *   // Add the grid description.
  *   gridOutput();
@@ -53719,6 +53757,10 @@
  *
  * <div>
  * <code>
+ * function setup() {
+ *   createCanvas(100, 100);
+ * }
+ *
  * function draw() {
  *   // Add the grid description and
  *   // display it for debugging.
@@ -53959,7 +54001,7 @@
               include
             ];
             //if other shapes of this type have been created
-          } else if (this.ingredients.shapes[f] !== [include]) {
+          } else {
             //for every shape of this type
             for (var y in this.ingredients.shapes[f]) {
               //compare it with current shape and if it already exists make add false
@@ -54037,17 +54079,11 @@
           var noCols = 10;
           var x = args[0];
           var y = args[1];
-          if (x < 0 || x >= canvasWidth || y < 0 || y >= canvasHeight) {
-            return null;
-          }
           var locX = Math.floor(x / canvasWidth * noRows);
           var locY = Math.floor(y / canvasHeight * noCols);
-          if (locX === noRows) {
-            locX = locX - 1;
-          }
-          if (locY === noCols) {
-            locY = locY - 1;
-          }
+          // clamp out of bounds values
+          locX = Math.min(Math.max(locX, 0), noRows - 1);
+          locY = Math.min(Math.max(locY, 0), noCols - 1);
           return {
             locX: locX,
             locY: locY
@@ -54162,7 +54198,15 @@
         //updates textOutput
 
         _main.default.prototype._updateTextOutput = function (idT) {
-          //if html structure is not there yet
+          // Check if the current rendering mode is WEBGL
+          if (this._renderer && this._renderer instanceof _main.default.RendererGL) {
+            if (!this._didOutputTextWebGLMessage) {
+              this._didOutputTextWebGLMessage = true;
+              console.error('textOutput() does not yet work in WebGL mode.');
+            }
+            return;
+          }          //if html structure is not there yet
+
           if (!this.dummyDOM.querySelector('#'.concat(idT, '_summary'))) {
             return;
           }
@@ -58028,6 +58072,11 @@
  * in RGB values. Calling `background(255, 204, 0)` sets the background a bright
  * yellow color.
  *
+ * The version of `background()` with four parameters interprets them as RGBA,
+ * HSBA, or HSLA colors, depending on the current
+ * <a href="#/p5/colorMode">colorMode()</a>. The last parameter sets the alpha
+ * (transparency) value.
+ *
  * @method background
  * @param {p5.Color} color  any value created by the <a href="#/p5/color">color()</a> function
  * @chainable
@@ -58067,6 +58116,19 @@
  *   background(255, 204, 0);
  *
  *   describe('A canvas with a yellow background.');
+ * }
+ * </code>
+ * </div>
+ *
+ * <div>
+ * <code>
+ * function setup() {
+ *   createCanvas(100, 100);
+ *
+ *   // R, G, B, and Alpha values.
+ *   background(255, 0, 0, 128);
+ *
+ *   describe('A canvas with a semi-transparent red background.');
  * }
  * </code>
  * </div>
@@ -58570,6 +58632,10 @@
  * <a href="#/p5/colorMode">colorMode()</a>. The default color space is RGB,
  * with each value in the range from 0 to 255.
  *
+ * The version of `fill()` with four parameters interprets them as `RGBA`, `HSBA`,
+ * or `HSLA` colors, depending on the current <a href="#/p5/colorMode">colorMode()</a>. The last parameter
+ * sets the alpha (transparency) value.
+ *
  * @method fill
  * @param  {Number}        v1      red value if color mode is RGB or hue value if color mode is HSB.
  * @param  {Number}        v2      green value if color mode is RGB or saturation value if color mode is HSB.
@@ -58605,6 +58671,22 @@
  *   square(20, 20, 60);
  *
  *   describe('A yellow square with a black outline.');
+ * }
+ * </code>
+ * </div>
+ *
+ * <div>
+ * <code>
+ * function setup() {
+ *   createCanvas(100, 100);
+ *
+ *   background(200);
+ *
+ *   // R, G, B, and Alpha values.
+ *   fill(255, 0, 0, 128);
+ *   square(20, 20, 60);
+ *
+ *   describe('A semi-transparent red square with a black outline.');
  * }
  * </code>
  * </div>
@@ -58904,7 +58986,7 @@
  * Sets the color used to draw points, lines, and the outlines of shapes.
  *
  * Calling `stroke(255, 165, 0)` or `stroke('orange')` means all shapes drawn
- * after calling `stroke()` will be filled with the color orange. The way
+ * after calling `stroke()` will be outlined with the color orange. The way
  * these parameters are interpreted may be changed with the
  * <a href="#/p5/colorMode">colorMode()</a> function.
  *
@@ -59315,7 +59397,7 @@
  * @property {String} VERSION
  * @final
  */
-        var VERSION = '1.11.9';
+        var VERSION = '1.11.11';
         // GRAPHICS RENDERER
         /**
  * The default, two-dimensional renderer.
@@ -61427,7 +61509,7 @@
  * can be used for debugging or other purposes.
  *
  * @method windowResized
- * @param {UIEvent} [event] optional resize Event.
+ * @param {Event} [event] optional resize Event.
  * @example
  * <div class="norender">
  * <code>
@@ -63809,7 +63891,7 @@
           var fesCodeReader = function fesCodeReader() {
             //moveAhead will determine if a match is found outside
             //the setup and draw function. If a match is found then
-            //to prevent further potential reporting we will exit immidiately
+            //to prevent further potential reporting we will exit immediately
             var moveAhead = globalConstFuncCheck();
             if (moveAhead) return;
             var code = '';
@@ -63965,7 +64047,7 @@
                   line = line.replace(/eval code/g, 'eval').replace(/(\(eval at [^()]*)|(\),.*$)/g, '');
                 }
                 var sanitizedLine = line.replace(/^\s+/, '').replace(/\(eval code/g, '(');
-                // capture and preseve the parenthesized location "(/foo/my bar.js:12:87)" in
+                // capture and preserve the parenthesized location "(/foo/my bar.js:12:87)" in
                 // case it has spaces in it, as the string is split on \s+ later on
                 var location = sanitizedLine.match(/ (\((.+):(\d+):(\d+)\)$)/);
                 // remove the parenthesized location from the line, if it was matched
@@ -65369,6 +65451,7 @@
         _dereq_('core-js/modules/es.regexp.exec');
         _dereq_('core-js/modules/es.string.includes');
         _dereq_('core-js/modules/es.string.iterator');
+        _dereq_('core-js/modules/es.string.replace');
         _dereq_('core-js/modules/es.string.split');
         _dereq_('core-js/modules/web.dom-collections.iterator');
         _dereq_('core-js/modules/es.array.includes');
@@ -65381,6 +65464,7 @@
         _dereq_('core-js/modules/es.regexp.exec');
         _dereq_('core-js/modules/es.string.includes');
         _dereq_('core-js/modules/es.string.iterator');
+        _dereq_('core-js/modules/es.string.replace');
         _dereq_('core-js/modules/es.string.split');
         _dereq_('core-js/modules/web.dom-collections.iterator');
         Object.defineProperty(exports, '__esModule', {
@@ -65389,6 +65473,7 @@
         exports.setTranslatorLanguage = exports.currentTranslatorLanguage = exports.availableTranslatorLanguages = exports.initialize = exports.translator = void 0;
         var _i18next = _interopRequireDefault(_dereq_('i18next'));
         var _i18nextBrowserLanguagedetector = _interopRequireDefault(_dereq_('i18next-browser-languagedetector'));
+        var _constants = _dereq_('./constants');
         function _interopRequireDefault(obj) {
           return obj && obj.__esModule ? obj : {
           default:
@@ -65568,7 +65653,9 @@
             },
             backend: {
               fallback: 'en',
-              loadPath: 'https://cdn.jsdelivr.net/npm/p5/translations/{{lng}}/{{ns}}.json'
+              // ensure that the FES internationalization strings are loaded
+              // from the latest patch of the current minor version of p5.js
+              loadPath: 'https://cdn.jsdelivr.net/npm/p5@'.concat(_constants.VERSION.replace(/^(\d+\.\d+)\.\d+.*$/, '$1'), '/translations/{{lng}}/{{ns}}.json')
             },
             partialBundledLanguages: true,
             resources: fallbackResources
@@ -65612,6 +65699,7 @@
       {
         '../../translations': 369,
         '../../translations/dev': undefined,
+        './constants': 294,
         'core-js/modules/es.array.includes': 181,
         'core-js/modules/es.array.iterator': 183,
         'core-js/modules/es.array.join': 184,
@@ -65622,6 +65710,7 @@
         'core-js/modules/es.regexp.exec': 213,
         'core-js/modules/es.string.includes': 217,
         'core-js/modules/es.string.iterator': 218,
+        'core-js/modules/es.string.replace': 222,
         'core-js/modules/es.string.split': 224,
         'core-js/modules/web.dom-collections.iterator': 264,
         'i18next': 275,
@@ -72685,8 +72774,7 @@
  * The fifth and sixth parameters, `start` and `stop`, set the angles
  * between which to draw the arc. Arcs are always drawn clockwise from
  * `start` to `stop`. The fifth and sixth parameters, start and stop, set the
- * angles between which to draw the arc. Arcs are always drawn clockwise from
- * start to stop. By default, angles are given in radians, but if angleMode
+ * angles between which to draw the arc. By default, angles are given in radians, but if angleMode
  * (DEGREES) is set, the function interprets the values in degrees.
  *
  * The seventh parameter, `mode`, is optional. It determines the arc's fill
@@ -75059,10 +75147,10 @@
  * between them.
  *
  * @method bezierPoint
- * @param {Number} a coordinate of first control point.
- * @param {Number} b coordinate of first anchor point.
- * @param {Number} c coordinate of second anchor point.
- * @param {Number} d coordinate of second control point.
+ * @param {Number} a coordinate of first anchor point.
+ * @param {Number} b coordinate of first control point.
+ * @param {Number} c coordinate of second control point.
+ * @param {Number} d coordinate of second anchor point.
  * @param {Number} t amount to interpolate between 0 and 1.
  * @return {Number} coordinate of the point on the curve.
  *
@@ -75647,10 +75735,10 @@
  * between them.
  *
  * @method curvePoint
- * @param {Number} a coordinate of first anchor point.
- * @param {Number} b coordinate of first control point.
- * @param {Number} c coordinate of second control point.
- * @param {Number} d coordinate of second anchor point.
+ * @param {Number} a coordinate of first control point.
+ * @param {Number} b coordinate of first anchor point.
+ * @param {Number} c coordinate of second anchor point.
+ * @param {Number} d coordinate of second control point.
  * @param {Number} t amount to interpolate between 0 and 1.
  * @return {Number} coordinate of a point on the curve.
  *
@@ -77296,7 +77384,7 @@
           return this;
         };
         /**
- * Begins adding vertices to a custom shape.
+ * Stops adding vertices to a custom shape.
  *
  * The <a href="#/p5/beginShape">beginShape()</a> and `endShape()` functions
  * allow for creating custom shapes in 2D or 3D.
@@ -77364,6 +77452,37 @@
  *
  *   describe(
  *     'Two sets of black lines drawn on a gray background. The three lines on the left form a right triangle. The two lines on the right form a right angle.'
+ *   );
+ * }
+ * </code>
+ * </div>
+ *
+ * <div>
+ * <code>
+ * function setup() {
+ *   createCanvas(200, 100);
+ *
+ *   background(240);
+ *
+ *   noFill();
+ *   stroke(0);
+ *
+ *   // Open shape (left)
+ *   beginShape();
+ *   vertex(20, 20);
+ *   vertex(80, 20);
+ *   vertex(80, 80);
+ *   endShape();  // Not closed
+ *
+ *   // Closed shape (right)
+ *   beginShape();
+ *   vertex(120, 20);
+ *   vertex(180, 20);
+ *   vertex(180, 80);
+ *   endShape(CLOSE);  // Closed
+ *
+ *   describe(
+ *     'Two right-angled shapes on a light gray background. The left shape is open with three lines. The right shape is closed, forming a triangle.'
  *   );
  * }
  * </code>
@@ -80634,7 +80753,7 @@
  * function draw() {
  *   background(200);
  *
- *   // Shear the coordinate system along the x-axis.
+ *   // Shear the coordinate system along the y-axis.
  *   shearY(QUARTER_PI);
  *
  *   // Draw the square.
@@ -80657,7 +80776,7 @@
  * function draw() {
  *   background(200);
  *
- *   // Shear the coordinate system along the x-axis.
+ *   // Shear the coordinate system along the y-axis.
  *   shearY(45);
  *
  *   // Draw the square.
@@ -90243,6 +90362,11 @@
  *
  * Note: `movedX` continues updating even when
  * <a href="#/p5/requestPointerLock">requestPointerLock()</a> is active.
+ * But keep in mind that during an active pointer lock, mouseX and pmouseX
+ * are locked, so `movedX` is based on
+ * <a href="https://developer.mozilla.org/en-US/docs/Web/API/MouseEvent/movementX">the MouseEvent's movementX value</a>
+ * (which may behave differently in different browsers when the user
+ * is zoomed in or out).
  *
  * @property {Number} movedX
  * @readOnly
@@ -90288,6 +90412,11 @@
  *
  * Note: `movedY` continues updating even when
  * <a href="#/p5/requestPointerLock">requestPointerLock()</a> is active.
+ * But keep in mind that during an active pointer lock, mouseX and pmouseX
+ * are locked, so `movedX` is based on
+ * <a href="https://developer.mozilla.org/en-US/docs/Web/API/MouseEvent/movementX">the MouseEvent's movementX value</a>
+ * (which may behave differently in different browsers when the user
+ * is zoomed in or out).
  *
  * @property {Number} movedY
  * @readOnly
@@ -90332,13 +90461,9 @@
         /**
  * A `Number` system variable that tracks the mouse's horizontal position.
  *
- * In 2D mode, `mouseX` keeps track of the mouse's position relative to the
+ * `mouseX` keeps track of the mouse's position relative to the
  * top-left corner of the canvas. For example, if the mouse is 50 pixels from
  * the left edge of the canvas, then `mouseX` will be 50.
- *
- * In WebGL mode, `mouseX` keeps track of the mouse's position relative to the
- * center of the canvas. For example, if the mouse is 50 pixels to the right
- * of the canvas' center, then `mouseX` will be 50.
  *
  * If touch is used instead of the mouse, then `mouseX` will hold the
  * x-coordinate of the most recent touch point.
@@ -90442,13 +90567,9 @@
         /**
  * A `Number` system variable that tracks the mouse's vertical position.
  *
- * In 2D mode, `mouseY` keeps track of the mouse's position relative to the
+ * `mouseY` keeps track of the mouse's position relative to the
  * top-left corner of the canvas. For example, if the mouse is 50 pixels from
  * the top edge of the canvas, then `mouseY` will be 50.
- *
- * In WebGL mode, `mouseY` keeps track of the mouse's position relative to the
- * center of the canvas. For example, if the mouse is 50 pixels below the
- * canvas' center, then `mouseY` will be 50.
  *
  * If touch is used instead of the mouse, then `mouseY` will hold the
  * y-coordinate of the most recent touch point.
@@ -90553,15 +90674,11 @@
  * A `Number` system variable that tracks the mouse's previous horizontal
  * position.
  *
- * In 2D mode, `pmouseX` keeps track of the mouse's position relative to the
+ * `pmouseX` keeps track of the mouse's position relative to the
  * top-left corner of the canvas. Its value is
  * <a href="#/p5/mouseX">mouseX</a> from the previous frame. For example, if
  * the mouse was 50 pixels from the left edge of the canvas during the last
  * frame, then `pmouseX` will be 50.
- *
- * In WebGL mode, `pmouseX` keeps track of the mouse's position relative to the
- * center of the canvas. For example, if the mouse was 50 pixels to the right
- * of the canvas' center during the last frame, then `pmouseX` will be 50.
  *
  * If touch is used instead of the mouse, then `pmouseX` will hold the
  * x-coordinate of the last touch point.
@@ -90621,15 +90738,11 @@
  * A `Number` system variable that tracks the mouse's previous vertical
  * position.
  *
- * In 2D mode, `pmouseY` keeps track of the mouse's position relative to the
+ * `pmouseY` keeps track of the mouse's position relative to the
  * top-left corner of the canvas. Its value is
  * <a href="#/p5/mouseY">mouseY</a> from the previous frame. For example, if
  * the mouse was 50 pixels from the top edge of the canvas during the last
  * frame, then `pmouseY` will be 50.
- *
- * In WebGL mode, `pmouseY` keeps track of the mouse's position relative to the
- * center of the canvas. For example, if the mouse was 50 pixels below the
- * canvas' center during the last frame, then `pmouseY` will be 50.
  *
  * If touch is used instead of the mouse, then `pmouseY` will hold the
  * y-coordinate of the last touch point.
@@ -91037,10 +91150,24 @@
             this._setProperty('mouseY', mousePos.y);
             this._setProperty('winMouseX', mousePos.winX);
             this._setProperty('winMouseY', mousePos.winY);
-            var deltaX = this.mouseX - this.pmouseX;
-            var deltaY = this.mouseY - this.pmouseY;
-            this._setProperty('movedX', deltaX);
-            this._setProperty('movedY', deltaY);
+            if (document.pointerLockElement === null) {
+              // https://developer.mozilla.org/en-US/docs/Web/API/Document/pointerLockElement
+              // "The pointerLockElement ... is null if lock is pending, pointer is unlocked,
+              // or the target is in another document."
+              // In this case, we use mouseX/Y and pmouseX/Y to calculate the distance,
+              // which allows movedX/Y to look consistent at different zoom levels across
+              // browsers.
+              var deltaX = this.mouseX - this.pmouseX;
+              var deltaY = this.mouseY - this.pmouseY;
+              this._setProperty('movedX', deltaX);
+              this._setProperty('movedY', deltaY);
+            } else {
+              // Because mouseX/Y and pmouseX/Y are locked, the elements movementX/Y
+              // is used for movedX/Y - this may behave differently on different
+              // browsers at different zoom levels.
+              this._setProperty('movedX', e.movementX);
+              this._setProperty('movedY', e.movementY);
+            }
           }
           if (!this._hasMouseInteracted) {
             this._updateMouseCoords();
@@ -114196,7 +114323,7 @@
                   var xoff = 0;
                   x = xOriginal;
                   var line = lines[i];
-                  line = line.replace('\t', '  ');
+                  line = line.replace(/\t/g, '  ');
                   var glyphs = this._getGlyphs(line);
                   for (var j = 0; j < glyphs.length; j++) {
                     if (!isSpace(j, line, glyphs)) {
@@ -128135,18 +128262,18 @@
  * to the pixel at coordinates `(u, v)` within an image. For example, the
  * corners of a rectangular image are mapped to the corners of a rectangle by default:
  *
- * <code>
+ * ```js
  * // Apply the image as a texture.
  * texture(img);
  *
  * // Draw the rectangle.
  * rect(0, 0, 30, 50);
- * </code>
+ * ```
  *
  * If the image in the code snippet above has dimensions of 300 x 500 pixels,
  * the same result could be achieved as follows:
  *
- * <code>
+ * ```js
  * // Apply the image as a texture.
  * texture(img);
  *
@@ -128170,7 +128297,7 @@
  * vertex(0, 50, 0, 0, 500);
  *
  * endShape();
- * </code>
+ * ```
  *
  * `textureMode()` changes the coordinate system for uv coordinates.
  *
@@ -128180,7 +128307,7 @@
  * be helpful for using the same code for multiple images of different sizes.
  * For example, the code snippet above could be rewritten as follows:
  *
- * <code>
+ * ```js
  * // Set the texture mode to use normalized coordinates.
  * textureMode(NORMAL);
  *
@@ -128207,7 +128334,7 @@
  * vertex(0, 50, 0, 0, 1);
  *
  * endShape();
- * </code>
+ * ```
  *
  * By default, `mode` is `IMAGE`, which scales uv coordinates to the
  * dimensions of the image. Calling `textureMode(IMAGE)` applies the default.
@@ -141288,8 +141415,8 @@
           phongFrag: lightingShader + '// include lighting.glsl\nprecision highp int;\n\nuniform bool uHasSetAmbient;\nuniform vec4 uSpecularMatColor;\nuniform vec4 uAmbientMatColor;\nuniform vec4 uEmissiveMatColor;\n\nuniform vec4 uTint;\nuniform sampler2D uSampler;\nuniform bool isTexture;\n\nIN vec3 vNormal;\nIN vec2 vTexCoord;\nIN vec3 vViewPosition;\nIN vec3 vAmbientColor;\nIN vec4 vColor;\n\nstruct ColorComponents {\n  vec3 baseColor;\n  float opacity;\n  vec3 ambientColor;\n  vec3 specularColor;\n  vec3 diffuse;\n  vec3 ambient;\n  vec3 specular;\n  vec3 emissive;\n};\n\nstruct Inputs {\n  vec3 normal;\n  vec2 texCoord;\n  vec3 ambientLight;\n  vec3 ambientMaterial;\n  vec3 specularMaterial;\n  vec3 emissiveMaterial;\n  vec4 color;\n  float shininess;\n  float metalness;\n};\n\nvoid main(void) {\n  HOOK_beforeFragment();\n\n  Inputs inputs;\n  inputs.normal = normalize(vNormal);\n  inputs.texCoord = vTexCoord;\n  inputs.ambientLight = vAmbientColor;\n  inputs.color = isTexture\n      // Textures come in with premultiplied alpha. To apply tint and still have\n      // premultiplied alpha output, we need to multiply the RGB channels by the\n      // tint RGB, and all channels by the tint alpha.\n      ? TEXTURE(uSampler, vTexCoord) * vec4(uTint.rgb/255., 1.) * (uTint.a/255.)\n      // Colors come in with unmultiplied alpha, so we need to multiply the RGB\n      // channels by alpha to convert it to premultiplied alpha.\n      : vec4(vColor.rgb * vColor.a, vColor.a);\n  inputs.shininess = uShininess;\n  inputs.metalness = uMetallic;\n  inputs.ambientMaterial = uHasSetAmbient ? uAmbientMatColor.rgb : inputs.color.rgb;\n  inputs.specularMaterial = uSpecularMatColor.rgb;\n  inputs.emissiveMaterial = uEmissiveMatColor.rgb;\n  inputs = HOOK_getPixelInputs(inputs);\n\n  vec3 diffuse;\n  vec3 specular;\n  totalLight(vViewPosition, inputs.normal, inputs.shininess, inputs.metalness, diffuse, specular);\n\n  // Calculating final color as result of all lights (plus emissive term).\n\n  vec2 texCoord = inputs.texCoord;\n  vec4 baseColor = inputs.color;\n  ColorComponents c;\n  c.opacity = baseColor.a;\n  c.baseColor = baseColor.rgb;\n  c.ambientColor = inputs.ambientMaterial;\n  c.specularColor = inputs.specularMaterial;\n  c.diffuse = diffuse;\n  c.ambient = inputs.ambientLight;\n  c.specular = specular;\n  c.emissive = inputs.emissiveMaterial;\n  OUT_COLOR = HOOK_getFinalColor(HOOK_combineColors(c));\n  HOOK_afterFragment();\n}\n',
           fontVert: 'IN vec3 aPosition;\nIN vec2 aTexCoord;\nuniform mat4 uModelViewMatrix;\nuniform mat4 uProjectionMatrix;\n\nuniform vec4 uGlyphRect;\nuniform float uGlyphOffset;\n\nOUT vec2 vTexCoord;\nOUT float w;\n\nvoid main() {\n  vec4 positionVec4 = vec4(aPosition, 1.0);\n\n  // scale by the size of the glyph\'s rectangle\n  positionVec4.xy *= uGlyphRect.zw - uGlyphRect.xy;\n\n  // Expand glyph bounding boxes by 1px on each side to give a bit of room\n  // for antialiasing\n  vec3 newOrigin = (uModelViewMatrix * vec4(0., 0., 0., 1.)).xyz;\n  vec3 newDX = (uModelViewMatrix * vec4(1., 0., 0., 1.)).xyz;\n  vec3 newDY = (uModelViewMatrix * vec4(0., 1., 0., 1.)).xyz;\n  vec2 pixelScale = vec2(\n    1. / length(newOrigin - newDX),\n    1. / length(newOrigin - newDY)\n  );\n  vec2 offset = pixelScale * normalize(aTexCoord - vec2(0.5, 0.5)) * vec2(1., -1.);\n  vec2 textureOffset = offset * (1. / vec2(\n    uGlyphRect.z - uGlyphRect.x,\n    uGlyphRect.w - uGlyphRect.y\n  ));\n\n  // move to the corner of the glyph\n  positionVec4.xy += uGlyphRect.xy;\n\n  // move to the letter\'s line offset\n  positionVec4.x += uGlyphOffset;\n\n  positionVec4.xy += offset;\n  \n  gl_Position = uProjectionMatrix * uModelViewMatrix * positionVec4;\n  vTexCoord = aTexCoord + textureOffset;\n  w = gl_Position.w;\n}\n',
           fontFrag: '#ifndef WEBGL2\n#extension GL_OES_standard_derivatives : enable\n#endif\n\n#if 0\n  // simulate integer math using floats\n\t#define int float\n\t#define ivec2 vec2\n\t#define INT(x) float(x)\n\n\tint ifloor(float v) { return floor(v); }\n\tivec2 ifloor(vec2 v) { return floor(v); }\n\n#else\n  // use native integer math\n\tprecision highp int;\n\t#define INT(x) x\n\n\tint ifloor(float v) { return int(v); }\n\tint ifloor(int v) { return v; }\n\tivec2 ifloor(vec2 v) { return ivec2(v); }\n\n#endif\n\nuniform sampler2D uSamplerStrokes;\nuniform sampler2D uSamplerRowStrokes;\nuniform sampler2D uSamplerRows;\nuniform sampler2D uSamplerColStrokes;\nuniform sampler2D uSamplerCols;\n\nuniform ivec2 uStrokeImageSize;\nuniform ivec2 uCellsImageSize;\nuniform ivec2 uGridImageSize;\n\nuniform ivec2 uGridOffset;\nuniform ivec2 uGridSize;\nuniform vec4 uMaterialColor;\n\nIN vec2 vTexCoord;\n\n// some helper functions\nint ROUND(float v) { return ifloor(v + 0.5); }\nivec2 ROUND(vec2 v) { return ifloor(v + 0.5); }\nfloat saturate(float v) { return clamp(v, 0.0, 1.0); }\nvec2 saturate(vec2 v) { return clamp(v, 0.0, 1.0); }\n\nint mul(float v1, int v2) {\n  return ifloor(v1 * float(v2));\n}\n\nivec2 mul(vec2 v1, ivec2 v2) {\n  return ifloor(v1 * vec2(v2) + 0.5);\n}\n\n// unpack a 16-bit integer from a float vec2\nint getInt16(vec2 v) {\n  ivec2 iv = ROUND(v * 255.0);\n  return iv.x * INT(128) + iv.y;\n}\n\nvec2 pixelScale;\nvec2 coverage = vec2(0.0);\nvec2 weight = vec2(0.5);\nconst float minDistance = 1.0/8192.0;\nconst float hardness = 1.05; // amount of antialias\n\n// the maximum number of curves in a glyph\nconst int N = INT(250);\n\n// retrieves an indexed pixel from a sampler\nvec4 getTexel(sampler2D sampler, int pos, ivec2 size) {\n  int width = size.x;\n  int y = ifloor(pos / width);\n  int x = pos - y * width;  // pos % width\n\n  return TEXTURE(sampler, (vec2(x, y) + 0.5) / vec2(size));\n}\n\nvoid calulateCrossings(vec2 p0, vec2 p1, vec2 p2, out vec2 C1, out vec2 C2) {\n\n  // get the coefficients of the quadratic in t\n  vec2 a = p0 - p1 * 2.0 + p2;\n  vec2 b = p0 - p1;\n  vec2 c = p0 - vTexCoord;\n\n  // found out which values of \'t\' it crosses the axes\n  vec2 surd = sqrt(max(vec2(0.0), b * b - a * c));\n  vec2 t1 = ((b - surd) / a).yx;\n  vec2 t2 = ((b + surd) / a).yx;\n\n  // approximate straight lines to avoid rounding errors\n  if (abs(a.y) < 0.001)\n    t1.x = t2.x = c.y / (2.0 * b.y);\n\n  if (abs(a.x) < 0.001)\n    t1.y = t2.y = c.x / (2.0 * b.x);\n\n  // plug into quadratic formula to find the corrdinates of the crossings\n  C1 = ((a * t1 - b * 2.0) * t1 + c) * pixelScale;\n  C2 = ((a * t2 - b * 2.0) * t2 + c) * pixelScale;\n}\n\nvoid coverageX(vec2 p0, vec2 p1, vec2 p2) {\n\n  vec2 C1, C2;\n  calulateCrossings(p0, p1, p2, C1, C2);\n\n  // determine on which side of the x-axis the points lie\n  bool y0 = p0.y > vTexCoord.y;\n  bool y1 = p1.y > vTexCoord.y;\n  bool y2 = p2.y > vTexCoord.y;\n\n  // could web be under the curve (after t1)?\n  if (y1 ? !y2 : y0) {\n    // add the coverage for t1\n    coverage.x += saturate(C1.x + 0.5);\n    // calculate the anti-aliasing for t1\n    weight.x = min(weight.x, abs(C1.x));\n  }\n\n  // are we outside the curve (after t2)?\n  if (y1 ? !y0 : y2) {\n    // subtract the coverage for t2\n    coverage.x -= saturate(C2.x + 0.5);\n    // calculate the anti-aliasing for t2\n    weight.x = min(weight.x, abs(C2.x));\n  }\n}\n\n// this is essentially the same as coverageX, but with the axes swapped\nvoid coverageY(vec2 p0, vec2 p1, vec2 p2) {\n\n  vec2 C1, C2;\n  calulateCrossings(p0, p1, p2, C1, C2);\n\n  bool x0 = p0.x > vTexCoord.x;\n  bool x1 = p1.x > vTexCoord.x;\n  bool x2 = p2.x > vTexCoord.x;\n\n  if (x1 ? !x2 : x0) {\n    coverage.y -= saturate(C1.y + 0.5);\n    weight.y = min(weight.y, abs(C1.y));\n  }\n\n  if (x1 ? !x0 : x2) {\n    coverage.y += saturate(C2.y + 0.5);\n    weight.y = min(weight.y, abs(C2.y));\n  }\n}\n\nvoid main() {\n\n  // calculate the pixel scale based on screen-coordinates\n  pixelScale = hardness / fwidth(vTexCoord);\n\n  // which grid cell is this pixel in?\n  ivec2 gridCoord = ifloor(vTexCoord * vec2(uGridSize));\n\n  // intersect curves in this row\n  {\n    // the index into the row info bitmap\n    int rowIndex = gridCoord.y + uGridOffset.y;\n    // fetch the info texel\n    vec4 rowInfo = getTexel(uSamplerRows, rowIndex, uGridImageSize);\n    // unpack the rowInfo\n    int rowStrokeIndex = getInt16(rowInfo.xy);\n    int rowStrokeCount = getInt16(rowInfo.zw);\n\n    for (int iRowStroke = INT(0); iRowStroke < N; iRowStroke++) {\n      if (iRowStroke >= rowStrokeCount)\n        break;\n\n      // each stroke is made up of 3 points: the start and control point\n      // and the start of the next curve.\n      // fetch the indices of this pair of strokes:\n      vec4 strokeIndices = getTexel(uSamplerRowStrokes, rowStrokeIndex++, uCellsImageSize);\n\n      // unpack the stroke index\n      int strokePos = getInt16(strokeIndices.xy);\n\n      // fetch the two strokes\n      vec4 stroke0 = getTexel(uSamplerStrokes, strokePos + INT(0), uStrokeImageSize);\n      vec4 stroke1 = getTexel(uSamplerStrokes, strokePos + INT(1), uStrokeImageSize);\n\n      // calculate the coverage\n      coverageX(stroke0.xy, stroke0.zw, stroke1.xy);\n    }\n  }\n\n  // intersect curves in this column\n  {\n    int colIndex = gridCoord.x + uGridOffset.x;\n    vec4 colInfo = getTexel(uSamplerCols, colIndex, uGridImageSize);\n    int colStrokeIndex = getInt16(colInfo.xy);\n    int colStrokeCount = getInt16(colInfo.zw);\n    \n    for (int iColStroke = INT(0); iColStroke < N; iColStroke++) {\n      if (iColStroke >= colStrokeCount)\n        break;\n\n      vec4 strokeIndices = getTexel(uSamplerColStrokes, colStrokeIndex++, uCellsImageSize);\n\n      int strokePos = getInt16(strokeIndices.xy);\n      vec4 stroke0 = getTexel(uSamplerStrokes, strokePos + INT(0), uStrokeImageSize);\n      vec4 stroke1 = getTexel(uSamplerStrokes, strokePos + INT(1), uStrokeImageSize);\n      coverageY(stroke0.xy, stroke0.zw, stroke1.xy);\n    }\n  }\n\n  weight = saturate(1.0 - weight * 2.0);\n  float distance = max(weight.x + weight.y, minDistance); // manhattan approx.\n  float antialias = abs(dot(coverage, weight) / distance);\n  float cover = min(abs(coverage.x), abs(coverage.y));\n  OUT_COLOR = vec4(uMaterialColor.rgb, 1.) * uMaterialColor.a;\n  OUT_COLOR *= saturate(max(antialias, cover));\n}\n',
-          lineVert: lineDefs + '/*\n  Part of the Processing project - http://processing.org\n  Copyright (c) 2012-15 The Processing Foundation\n  Copyright (c) 2004-12 Ben Fry and Casey Reas\n  Copyright (c) 2001-04 Massachusetts Institute of Technology\n  This library is free software; you can redistribute it and/or\n  modify it under the terms of the GNU Lesser General Public\n  License as published by the Free Software Foundation, version 2.1.\n  This library is distributed in the hope that it will be useful,\n  but WITHOUT ANY WARRANTY; without even the implied warranty of\n  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU\n  Lesser General Public License for more details.\n  You should have received a copy of the GNU Lesser General\n  Public License along with this library; if not, write to the\n  Free Software Foundation, Inc., 59 Temple Place, Suite 330,\n  Boston, MA  02111-1307  USA\n*/\n\n#define PROCESSING_LINE_SHADER\n\nprecision mediump int;\n\nuniform mat4 uModelViewMatrix;\nuniform mat4 uProjectionMatrix;\nuniform float uStrokeWeight;\n\nuniform bool uUseLineColor;\nuniform vec4 uMaterialColor;\n\nuniform vec4 uViewport;\nuniform int uPerspective;\nuniform int uStrokeJoin;\n\nIN vec4 aPosition;\nIN vec3 aTangentIn;\nIN vec3 aTangentOut;\nIN float aSide;\nIN vec4 aVertexColor;\n\nOUT vec4 vColor;\nOUT vec2 vTangent;\nOUT vec2 vCenter;\nOUT vec2 vPosition;\nOUT float vMaxDist;\nOUT float vCap;\nOUT float vJoin;\nOUT float vStrokeWeight;\n\nvec2 lineIntersection(vec2 aPoint, vec2 aDir, vec2 bPoint, vec2 bDir) {\n  // Rotate and translate so a starts at the origin and goes out to the right\n  bPoint -= aPoint;\n  vec2 rotatedBFrom = vec2(\n    bPoint.x*aDir.x + bPoint.y*aDir.y,\n    bPoint.y*aDir.x - bPoint.x*aDir.y\n  );\n  vec2 bTo = bPoint + bDir;\n  vec2 rotatedBTo = vec2(\n    bTo.x*aDir.x + bTo.y*aDir.y,\n    bTo.y*aDir.x - bTo.x*aDir.y\n  );\n  float intersectionDistance =\n    rotatedBTo.x + (rotatedBFrom.x - rotatedBTo.x) * rotatedBTo.y /\n    (rotatedBTo.y - rotatedBFrom.y);\n  return aPoint + aDir * intersectionDistance;\n}\n\nvoid main() {\n  HOOK_beforeVertex();\n  // Caps have one of either the in or out tangent set to 0\n  vCap = (aTangentIn == vec3(0.)) != (aTangentOut == (vec3(0.)))\n    ? 1. : 0.;\n\n  // Joins have two unique, defined tangents\n  vJoin = (\n    aTangentIn != vec3(0.) &&\n    aTangentOut != vec3(0.) &&\n    aTangentIn != aTangentOut\n  ) ? 1. : 0.;\n\n  vec4 localPosition = vec4(HOOK_getLocalPosition(aPosition.xyz), 1.);\n  vec4 posp = vec4(HOOK_getWorldPosition((uModelViewMatrix * localPosition).xyz), 1.);\n  vec4 posqIn = posp + uModelViewMatrix * vec4(aTangentIn, 0);\n  vec4 posqOut = posp + uModelViewMatrix * vec4(aTangentOut, 0);\n  float strokeWeight = HOOK_getStrokeWeight(uStrokeWeight);\n  vStrokeWeight = strokeWeight;\n\n  float facingCamera = pow(\n    // The word space tangent\'s z value is 0 if it\'s facing the camera\n    abs(normalize(posqIn-posp).z),\n\n    // Using pow() here to ramp `facingCamera` up from 0 to 1 really quickly\n    // so most lines get scaled and don\'t get clipped\n    0.25\n  );\n\n  // Moving vertices slightly toward the camera\n  // to avoid depth-fighting with the fill triangles.\n  // A mix of scaling and offsetting is used based on distance\n  // Discussion here:\n  // https://github.com/processing/p5.js/issues/7200 \n\n  // using a scale <1 moves the lines towards nearby camera\n  // in order to prevent popping effects due to half of\n  // the line disappearing behind the geometry faces.\n  float zDistance = -posp.z; \n  float distanceFactor = smoothstep(0.0, 800.0, zDistance); \n  \n  // Discussed here:\n  // http://www.opengl.org/discussion_boards/ubbthreads.php?ubb=showflat&Number=252848  \n  float scale = mix(1., 0.995, facingCamera);\n  float dynamicScale = mix(scale, 1.0, distanceFactor); // Closer = more scale, farther = less\n\n  posp.xyz = posp.xyz * dynamicScale;\n  posqIn.xyz = posqIn.xyz * dynamicScale;\n  posqOut.xyz = posqOut.xyz * dynamicScale;\n\n  // Moving vertices slightly toward camera when far away \n  // https://github.com/processing/p5.js/issues/6956 \n  float zOffset = mix(-0.00045, -1., facingCamera);\n  float dynamicZAdjustment = mix(0.0, zOffset, distanceFactor); // Closer = less zAdjustment, farther = more\n\n  posp.z -= dynamicZAdjustment;\n  posqIn.z -= dynamicZAdjustment;\n  posqOut.z -= dynamicZAdjustment;\n  \n  vec4 p = uProjectionMatrix * posp;\n  vec4 qIn = uProjectionMatrix * posqIn;\n  vec4 qOut = uProjectionMatrix * posqOut;\n  vCenter = HOOK_getLineCenter(p.xy);\n\n  // formula to convert from clip space (range -1..1) to screen space (range 0..[width or height])\n  // screen_p = (p.xy/p.w + <1,1>) * 0.5 * uViewport.zw\n\n  // prevent division by W by transforming the tangent formula (div by 0 causes\n  // the line to disappear, see https://github.com/processing/processing/issues/5183)\n  // t = screen_q - screen_p\n  //\n  // tangent is normalized and we don\'t care which aDirection it points to (+-)\n  // t = +- normalize( screen_q - screen_p )\n  // t = +- normalize( (q.xy/q.w+<1,1>)*0.5*uViewport.zw - (p.xy/p.w+<1,1>)*0.5*uViewport.zw )\n  //\n  // extract common factor, <1,1> - <1,1> cancels out\n  // t = +- normalize( (q.xy/q.w - p.xy/p.w) * 0.5 * uViewport.zw )\n  //\n  // convert to common divisor\n  // t = +- normalize( ((q.xy*p.w - p.xy*q.w) / (p.w*q.w)) * 0.5 * uViewport.zw )\n  //\n  // remove the common scalar divisor/factor, not needed due to normalize and +-\n  // (keep uViewport - can\'t remove because it has different components for x and y\n  //  and corrects for aspect ratio, see https://github.com/processing/processing/issues/5181)\n  // t = +- normalize( (q.xy*p.w - p.xy*q.w) * uViewport.zw )\n\n  vec2 tangentIn = normalize((qIn.xy*p.w - p.xy*qIn.w) * uViewport.zw);\n  vec2 tangentOut = normalize((qOut.xy*p.w - p.xy*qOut.w) * uViewport.zw);\n\n  vec2 curPerspScale;\n  if(uPerspective == 1) {\n    // Perspective ---\n    // convert from world to clip by multiplying with projection scaling factor\n    // to get the right thickness (see https://github.com/processing/processing/issues/5182)\n\n    // The y value of the projection matrix may be flipped if rendering to a Framebuffer.\n    // Multiplying again by its sign here negates the flip to get just the scale.\n    curPerspScale = (uProjectionMatrix * vec4(1, sign(uProjectionMatrix[1][1]), 0, 0)).xy;\n  } else {\n    // No Perspective ---\n    // multiply by W (to cancel out division by W later in the pipeline) and\n    // convert from screen to clip (derived from clip to screen above)\n    curPerspScale = p.w / (0.5 * uViewport.zw);\n  }\n\n  vec2 offset;\n  if (vJoin == 1.) {\n    vTangent = normalize(tangentIn + tangentOut);\n    vec2 normalIn = vec2(-tangentIn.y, tangentIn.x);\n    vec2 normalOut = vec2(-tangentOut.y, tangentOut.x);\n    float side = sign(aSide);\n    float sideEnum = abs(aSide);\n\n    // We generate vertices for joins on either side of the centerline, but\n    // the "elbow" side is the only one needing a join. By not setting the\n    // offset for the other side, all its vertices will end up in the same\n    // spot and not render, effectively discarding it.\n    if (sign(dot(tangentOut, vec2(-tangentIn.y, tangentIn.x))) != side) {\n      // Side enums:\n      //   1: the side going into the join\n      //   2: the middle of the join\n      //   3: the side going out of the join\n      if (sideEnum == 2.) {\n        // Calculate the position + tangent on either side of the join, and\n        // find where the lines intersect to find the elbow of the join\n        vec2 c = (posp.xy/posp.w + vec2(1.,1.)) * 0.5 * uViewport.zw;\n        vec2 intersection = lineIntersection(\n          c + (side * normalIn * strokeWeight / 2.),\n          tangentIn,\n          c + (side * normalOut * strokeWeight / 2.),\n          tangentOut\n        );\n        offset = (intersection - c);\n\n        // When lines are thick and the angle of the join approaches 180, the\n        // elbow might be really far from the center. We\'ll apply a limit to\n        // the magnitude to avoid lines going across the whole screen when this\n        // happens.\n        float mag = length(offset);\n        float maxMag = 3. * strokeWeight;\n        if (mag > maxMag) {\n          offset *= maxMag / mag;\n        }\n      } else if (sideEnum == 1.) {\n        offset = side * normalIn * strokeWeight / 2.;\n      } else if (sideEnum == 3.) {\n        offset = side * normalOut * strokeWeight / 2.;\n      }\n    }\n    if (uStrokeJoin == STROKE_JOIN_BEVEL) {\n      vec2 avgNormal = vec2(-vTangent.y, vTangent.x);\n      vMaxDist = abs(dot(avgNormal, normalIn * strokeWeight / 2.));\n    } else {\n      vMaxDist = strokeWeight / 2.;\n    }\n  } else {\n    vec2 tangent = aTangentIn == vec3(0.) ? tangentOut : tangentIn;\n    vTangent = tangent;\n    vec2 normal = vec2(-tangent.y, tangent.x);\n\n    float normalOffset = sign(aSide);\n    // Caps will have side values of -2 or 2 on the edge of the cap that\n    // extends out from the line\n    float tangentOffset = abs(aSide) - 1.;\n    offset = (normal * normalOffset + tangent * tangentOffset) *\n      strokeWeight * 0.5;\n    vMaxDist = strokeWeight / 2.;\n  }\n  vPosition = HOOK_getLinePosition(vCenter + offset);\n\n  gl_Position.xy = p.xy + offset.xy * curPerspScale;\n  gl_Position.zw = p.zw;\n  \n  vColor = HOOK_getVertexColor(uUseLineColor ? aVertexColor : uMaterialColor);\n  HOOK_afterVertex();\n}\n',
-          lineFrag: lineDefs + 'precision mediump int;\n\nuniform vec4 uMaterialColor;\nuniform int uStrokeCap;\nuniform int uStrokeJoin;\n\nIN vec4 vColor;\nIN vec2 vTangent;\nIN vec2 vCenter;\nIN vec2 vPosition;\nIN float vStrokeWeight;\nIN float vMaxDist;\nIN float vCap;\nIN float vJoin;\n\nfloat distSquared(vec2 a, vec2 b) {\n  vec2 aToB = b - a;\n  return dot(aToB, aToB);\n}\n\nstruct Inputs {\n  vec4 color;\n  vec2 tangent;\n  vec2 center;\n  vec2 position;\n  float strokeWeight;\n};\n\nvoid main() {\n  HOOK_beforeFragment();\n\n  Inputs inputs;\n  inputs.color = vColor;\n  inputs.tangent = vTangent;\n  inputs.center = vCenter;\n  inputs.position = vPosition;\n  inputs.strokeWeight = vStrokeWeight;\n  inputs = HOOK_getPixelInputs(inputs);\n\n  if (vCap > 0.) {\n    if (\n      uStrokeCap == STROKE_CAP_ROUND &&\n      HOOK_shouldDiscard(distSquared(inputs.position, inputs.center) > inputs.strokeWeight * inputs.strokeWeight * 0.25)\n    ) {\n      discard;\n    } else if (\n      uStrokeCap == STROKE_CAP_SQUARE &&\n      HOOK_shouldDiscard(dot(inputs.position - inputs.center, inputs.tangent) > 0.)\n    ) {\n      discard;\n    // Use full area for PROJECT\n    } else if (HOOK_shouldDiscard(false)) {\n      discard;\n    }\n  } else if (vJoin > 0.) {\n    if (\n      uStrokeJoin == STROKE_JOIN_ROUND &&\n      HOOK_shouldDiscard(distSquared(inputs.position, inputs.center) > inputs.strokeWeight * inputs.strokeWeight * 0.25)\n    ) {\n      discard;\n    } else if (uStrokeJoin == STROKE_JOIN_BEVEL) {\n      vec2 normal = vec2(-inputs.tangent.y, inputs.tangent.x);\n      if (HOOK_shouldDiscard(abs(dot(inputs.position - inputs.center, normal)) > vMaxDist)) {\n        discard;\n      }\n    // Use full area for MITER\n    } else if (HOOK_shouldDiscard(false)) {\n      discard;\n    }\n  }\n  OUT_COLOR = HOOK_getFinalColor(vec4(inputs.color.rgb, 1.) * inputs.color.a);\n  HOOK_afterFragment();\n}\n',
+          lineVert: lineDefs + '/*\n  Part of the Processing project - http://processing.org\n  Copyright (c) 2012-15 The Processing Foundation\n  Copyright (c) 2004-12 Ben Fry and Casey Reas\n  Copyright (c) 2001-04 Massachusetts Institute of Technology\n  This library is free software; you can redistribute it and/or\n  modify it under the terms of the GNU Lesser General Public\n  License as published by the Free Software Foundation, version 2.1.\n  This library is distributed in the hope that it will be useful,\n  but WITHOUT ANY WARRANTY; without even the implied warranty of\n  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU\n  Lesser General Public License for more details.\n  You should have received a copy of the GNU Lesser General\n  Public License along with this library; if not, write to the\n  Free Software Foundation, Inc., 59 Temple Place, Suite 330,\n  Boston, MA  02111-1307  USA\n*/\n\n#define PROCESSING_LINE_SHADER\n\nprecision highp int;\nprecision highp float;\n\nuniform mat4 uModelViewMatrix;\nuniform mat4 uProjectionMatrix;\nuniform float uStrokeWeight;\n\nuniform bool uUseLineColor;\nuniform vec4 uMaterialColor;\n\nuniform vec4 uViewport;\nuniform int uPerspective;\nuniform int uStrokeJoin;\n\nIN vec4 aPosition;\nIN vec3 aTangentIn;\nIN vec3 aTangentOut;\nIN float aSide;\nIN vec4 aVertexColor;\n\nOUT vec4 vColor;\nOUT vec2 vTangent;\nOUT vec2 vCenter;\nOUT vec2 vPosition;\nOUT float vMaxDist;\nOUT float vCap;\nOUT float vJoin;\nOUT float vStrokeWeight;\n\nvec2 lineIntersection(vec2 aPoint, vec2 aDir, vec2 bPoint, vec2 bDir) {\n  // Rotate and translate so a starts at the origin and goes out to the right\n  bPoint -= aPoint;\n  vec2 rotatedBFrom = vec2(\n    bPoint.x*aDir.x + bPoint.y*aDir.y,\n    bPoint.y*aDir.x - bPoint.x*aDir.y\n  );\n  vec2 bTo = bPoint + bDir;\n  vec2 rotatedBTo = vec2(\n    bTo.x*aDir.x + bTo.y*aDir.y,\n    bTo.y*aDir.x - bTo.x*aDir.y\n  );\n  float intersectionDistance =\n    rotatedBTo.x + (rotatedBFrom.x - rotatedBTo.x) * rotatedBTo.y /\n    (rotatedBTo.y - rotatedBFrom.y);\n  return aPoint + aDir * intersectionDistance;\n}\n\nvoid main() {\n  HOOK_beforeVertex();\n  // Caps have one of either the in or out tangent set to 0\n  vCap = (aTangentIn == vec3(0.)) != (aTangentOut == (vec3(0.)))\n    ? 1. : 0.;\n\n  // Joins have two unique, defined tangents\n  vJoin = (\n    aTangentIn != vec3(0.) &&\n    aTangentOut != vec3(0.) &&\n    aTangentIn != aTangentOut\n  ) ? 1. : 0.;\n\n  vec4 localPosition = vec4(HOOK_getLocalPosition(aPosition.xyz), 1.);\n  vec4 posp = vec4(HOOK_getWorldPosition((uModelViewMatrix * localPosition).xyz), 1.);\n  vec4 posqIn = posp + uModelViewMatrix * vec4(aTangentIn, 0);\n  vec4 posqOut = posp + uModelViewMatrix * vec4(aTangentOut, 0);\n  float strokeWeight = HOOK_getStrokeWeight(uStrokeWeight);\n  vStrokeWeight = strokeWeight;\n\n  float facingCamera = pow(\n    // The word space tangent\'s z value is 0 if it\'s facing the camera\n    abs(normalize(posqIn-posp).z),\n\n    // Using pow() here to ramp `facingCamera` up from 0 to 1 really quickly\n    // so most lines get scaled and don\'t get clipped\n    0.25\n  );\n\n  // Moving vertices slightly toward the camera\n  // to avoid depth-fighting with the fill triangles.\n  // A mix of scaling and offsetting is used based on distance\n  // Discussion here:\n  // https://github.com/processing/p5.js/issues/7200 \n\n  // using a scale <1 moves the lines towards nearby camera\n  // in order to prevent popping effects due to half of\n  // the line disappearing behind the geometry faces.\n  float zDistance = -posp.z; \n  float distanceFactor = smoothstep(0.0, 800.0, zDistance); \n  \n  // Discussed here:\n  // http://www.opengl.org/discussion_boards/ubbthreads.php?ubb=showflat&Number=252848  \n  float scale = mix(1., 0.995, facingCamera);\n  float dynamicScale = mix(scale, 1.0, distanceFactor); // Closer = more scale, farther = less\n\n  posp.xyz = posp.xyz * dynamicScale;\n  posqIn.xyz = posqIn.xyz * dynamicScale;\n  posqOut.xyz = posqOut.xyz * dynamicScale;\n\n  // Moving vertices slightly toward camera when far away \n  // https://github.com/processing/p5.js/issues/6956 \n  float zOffset = mix(0., -1., facingCamera);\n  float dynamicZAdjustment = mix(0.0, zOffset, distanceFactor); // Closer = less zAdjustment, farther = more\n\n  posp.z -= dynamicZAdjustment;\n  posqIn.z -= dynamicZAdjustment;\n  posqOut.z -= dynamicZAdjustment;\n  \n  vec4 p = uProjectionMatrix * posp;\n  vec4 qIn = uProjectionMatrix * posqIn;\n  vec4 qOut = uProjectionMatrix * posqOut;\n  vCenter = HOOK_getLineCenter(p.xy);\n\n  // formula to convert from clip space (range -1..1) to screen space (range 0..[width or height])\n  // screen_p = (p.xy/p.w + <1,1>) * 0.5 * uViewport.zw\n\n  // prevent division by W by transforming the tangent formula (div by 0 causes\n  // the line to disappear, see https://github.com/processing/processing/issues/5183)\n  // t = screen_q - screen_p\n  //\n  // tangent is normalized and we don\'t care which aDirection it points to (+-)\n  // t = +- normalize( screen_q - screen_p )\n  // t = +- normalize( (q.xy/q.w+<1,1>)*0.5*uViewport.zw - (p.xy/p.w+<1,1>)*0.5*uViewport.zw )\n  //\n  // extract common factor, <1,1> - <1,1> cancels out\n  // t = +- normalize( (q.xy/q.w - p.xy/p.w) * 0.5 * uViewport.zw )\n  //\n  // convert to common divisor\n  // t = +- normalize( ((q.xy*p.w - p.xy*q.w) / (p.w*q.w)) * 0.5 * uViewport.zw )\n  //\n  // remove the common scalar divisor/factor, not needed due to normalize and +-\n  // (keep uViewport - can\'t remove because it has different components for x and y\n  //  and corrects for aspect ratio, see https://github.com/processing/processing/issues/5181)\n  // t = +- normalize( (q.xy*p.w - p.xy*q.w) * uViewport.zw )\n\n  vec2 tangentIn = normalize((qIn.xy*p.w - p.xy*qIn.w) * uViewport.zw);\n  vec2 tangentOut = normalize((qOut.xy*p.w - p.xy*qOut.w) * uViewport.zw);\n\n  vec2 curPerspScale;\n  if(uPerspective == 1) {\n    // Perspective ---\n    // convert from world to clip by multiplying with projection scaling factor\n    // to get the right thickness (see https://github.com/processing/processing/issues/5182)\n\n    // The y value of the projection matrix may be flipped if rendering to a Framebuffer.\n    // Multiplying again by its sign here negates the flip to get just the scale.\n    curPerspScale = (uProjectionMatrix * vec4(1, sign(uProjectionMatrix[1][1]), 0, 0)).xy;\n  } else {\n    // No Perspective ---\n    // multiply by W (to cancel out division by W later in the pipeline) and\n    // convert from screen to clip (derived from clip to screen above)\n    curPerspScale = p.w / (0.5 * uViewport.zw);\n  }\n\n  vec2 offset;\n  if (vJoin == 1.) {\n    vTangent = normalize(tangentIn + tangentOut);\n    vec2 normalIn = vec2(-tangentIn.y, tangentIn.x);\n    vec2 normalOut = vec2(-tangentOut.y, tangentOut.x);\n    float side = sign(aSide);\n    float sideEnum = abs(aSide);\n\n    // We generate vertices for joins on either side of the centerline, but\n    // the "elbow" side is the only one needing a join. By not setting the\n    // offset for the other side, all its vertices will end up in the same\n    // spot and not render, effectively discarding it.\n    if (sign(dot(tangentOut, vec2(-tangentIn.y, tangentIn.x))) != side) {\n      // Side enums:\n      //   1: the side going into the join\n      //   2: the middle of the join\n      //   3: the side going out of the join\n      if (sideEnum == 2.) {\n        // Calculate the position + tangent on either side of the join, and\n        // find where the lines intersect to find the elbow of the join\n        vec2 c = (posp.xy/posp.w + vec2(1.,1.)) * 0.5 * uViewport.zw;\n        vec2 intersection = lineIntersection(\n          c + (side * normalIn * strokeWeight / 2.),\n          tangentIn,\n          c + (side * normalOut * strokeWeight / 2.),\n          tangentOut\n        );\n        offset = (intersection - c);\n\n        // When lines are thick and the angle of the join approaches 180, the\n        // elbow might be really far from the center. We\'ll apply a limit to\n        // the magnitude to avoid lines going across the whole screen when this\n        // happens.\n        float mag = length(offset);\n        float maxMag = 3. * strokeWeight;\n        if (mag > maxMag) {\n          offset *= maxMag / mag;\n        }\n      } else if (sideEnum == 1.) {\n        offset = side * normalIn * strokeWeight / 2.;\n      } else if (sideEnum == 3.) {\n        offset = side * normalOut * strokeWeight / 2.;\n      }\n    }\n    if (uStrokeJoin == STROKE_JOIN_BEVEL) {\n      vec2 avgNormal = vec2(-vTangent.y, vTangent.x);\n      vMaxDist = abs(dot(avgNormal, normalIn * strokeWeight / 2.));\n    } else {\n      vMaxDist = strokeWeight / 2.;\n    }\n  } else {\n    vec2 tangent = aTangentIn == vec3(0.) ? tangentOut : tangentIn;\n    vTangent = tangent;\n    vec2 normal = vec2(-tangent.y, tangent.x);\n\n    float normalOffset = sign(aSide);\n    // Caps will have side values of -2 or 2 on the edge of the cap that\n    // extends out from the line\n    float tangentOffset = abs(aSide) - 1.;\n    offset = (normal * normalOffset + tangent * tangentOffset) *\n      strokeWeight * 0.5;\n    vMaxDist = strokeWeight / 2.;\n  }\n  vPosition = HOOK_getLinePosition(vCenter + offset);\n\n  gl_Position.xy = p.xy + offset.xy * curPerspScale;\n  gl_Position.zw = p.zw;\n  \n  vColor = HOOK_getVertexColor(uUseLineColor ? aVertexColor : uMaterialColor);\n  HOOK_afterVertex();\n}\n',
+          lineFrag: lineDefs + 'precision highp int;\nprecision highp float;\n\nuniform vec4 uMaterialColor;\nuniform int uStrokeCap;\nuniform int uStrokeJoin;\n\nIN vec4 vColor;\nIN vec2 vTangent;\nIN vec2 vCenter;\nIN vec2 vPosition;\nIN float vStrokeWeight;\nIN float vMaxDist;\nIN float vCap;\nIN float vJoin;\n\nfloat distSquared(vec2 a, vec2 b) {\n  vec2 aToB = b - a;\n  return dot(aToB, aToB);\n}\n\nstruct Inputs {\n  vec4 color;\n  vec2 tangent;\n  vec2 center;\n  vec2 position;\n  float strokeWeight;\n};\n\nvoid main() {\n  HOOK_beforeFragment();\n\n  Inputs inputs;\n  inputs.color = vColor;\n  inputs.tangent = vTangent;\n  inputs.center = vCenter;\n  inputs.position = vPosition;\n  inputs.strokeWeight = vStrokeWeight;\n  inputs = HOOK_getPixelInputs(inputs);\n\n  if (vCap > 0.) {\n    if (\n      uStrokeCap == STROKE_CAP_ROUND &&\n      HOOK_shouldDiscard(distSquared(inputs.position, inputs.center) > inputs.strokeWeight * inputs.strokeWeight * 0.25)\n    ) {\n      discard;\n    } else if (\n      uStrokeCap == STROKE_CAP_SQUARE &&\n      HOOK_shouldDiscard(dot(inputs.position - inputs.center, inputs.tangent) > 0.)\n    ) {\n      discard;\n    // Use full area for PROJECT\n    } else if (HOOK_shouldDiscard(false)) {\n      discard;\n    }\n  } else if (vJoin > 0.) {\n    if (\n      uStrokeJoin == STROKE_JOIN_ROUND &&\n      HOOK_shouldDiscard(distSquared(inputs.position, inputs.center) > inputs.strokeWeight * inputs.strokeWeight * 0.25)\n    ) {\n      discard;\n    } else if (uStrokeJoin == STROKE_JOIN_BEVEL) {\n      vec2 normal = vec2(-inputs.tangent.y, inputs.tangent.x);\n      if (HOOK_shouldDiscard(abs(dot(inputs.position - inputs.center, normal)) > vMaxDist)) {\n        discard;\n      }\n    // Use full area for MITER\n    } else if (HOOK_shouldDiscard(false)) {\n      discard;\n    }\n  }\n  OUT_COLOR = HOOK_getFinalColor(vec4(inputs.color.rgb, 1.) * inputs.color.a);\n  HOOK_afterFragment();\n}\n',
           pointVert: 'IN vec3 aPosition;\nuniform float uPointSize;\nOUT float vStrokeWeight;\nuniform mat4 uModelViewMatrix;\nuniform mat4 uProjectionMatrix;\n\nvoid main() {\n  HOOK_beforeVertex();\n  vec4 viewModelPosition = vec4(HOOK_getWorldPosition(\n    (uModelViewMatrix * vec4(HOOK_getLocalPosition(aPosition), 1.0)).xyz\n  ), 1.);\n  gl_Position = uProjectionMatrix * viewModelPosition;  \n\n  float pointSize = HOOK_getPointSize(uPointSize);\n\n\tgl_PointSize = pointSize;\n\tvStrokeWeight = pointSize;\n  HOOK_afterVertex();\n}\n',
           pointFrag: 'precision mediump int;\nuniform vec4 uMaterialColor;\nIN float vStrokeWeight;\n\nvoid main(){\n  HOOK_beforeFragment();\n  float mask = 0.0;\n\n  // make a circular mask using the gl_PointCoord (goes from 0 - 1 on a point)\n  // might be able to get a nicer edge on big strokeweights with smoothstep but slightly less performant\n\n  mask = step(0.98, length(gl_PointCoord * 2.0 - 1.0));\n\n  // if strokeWeight is 1 or less lets just draw a square\n  // this prevents weird artifacting from carving circles when our points are really small\n  // if strokeWeight is larger than 1, we just use it as is\n\n  mask = mix(0.0, mask, clamp(floor(vStrokeWeight - 0.5),0.0,1.0));\n\n  // throw away the borders of the mask\n  // otherwise we get weird alpha blending issues\n\n  if(HOOK_shouldDiscard(mask > 0.98)){\n    discard;\n  }\n\n  OUT_COLOR = HOOK_getFinalColor(vec4(uMaterialColor.rgb, 1.) * uMaterialColor.a);\n  HOOK_afterFragment();\n}\n',
           imageLightVert: 'precision highp float;\nattribute vec3 aPosition;\nattribute vec3 aNormal;\nattribute vec2 aTexCoord;\n\nvarying vec3 localPos;\nvarying vec3 vWorldNormal;\nvarying vec3 vWorldPosition;\nvarying vec2 vTexCoord;\n\nuniform mat4 uModelViewMatrix;\nuniform mat4 uProjectionMatrix;\nuniform mat3 uNormalMatrix;\n\nvoid main() {\n  // Multiply the position by the matrix.\n  vec4 viewModelPosition = uModelViewMatrix * vec4(aPosition, 1.0);\n  gl_Position = uProjectionMatrix * viewModelPosition;  \n  \n  // orient the normals and pass to the fragment shader\n  vWorldNormal = uNormalMatrix * aNormal;\n  \n  // send the view position to the fragment shader\n  vWorldPosition = (uModelViewMatrix * vec4(aPosition, 1.0)).xyz;\n  \n  localPos = vWorldPosition;\n  vTexCoord = aTexCoord;\n}\n\n\n/*\nin the vertex shader we\'ll compute the world position and world oriented normal of the vertices and pass those to the fragment shader as varyings.\n*/\n',
@@ -143745,7 +143872,7 @@
  * ensures that p5 is using a 3d renderer. throws an error if not.
  */
         _main.default.prototype._assert3d = function (name) {
-          if (!this._renderer.isP3D) throw new Error(''.concat(name, '() is only supported in WEBGL mode. If you\'d like to use 3D graphics and WebGL, see  https://p5js.org/examples/form-3d-primitives.html for more information.'));
+          if (!this._renderer.isP3D) throw new Error(''.concat(name, '() is only supported in WEBGL mode. If you\'d like to use 3D graphics and WebGL, see https://p5js.org/examples/3d-geometries/ for more information.'));
         };
         // function to initialize GLU Tesselator
         _main.default.RendererGL.prototype.tessyVertexSize = 12;

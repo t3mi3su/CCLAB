@@ -1,4 +1,4 @@
-/*! p5.js v1.11.9 July 17, 2025 */
+/*! p5.js v1.11.3 January 22, 2025 */
 (function (f) {
   if (typeof exports === 'object' && typeof module !== 'undefined') {
     module.exports = f()
@@ -6242,7 +6242,7 @@
               'params': [
                 {
                   'name': 'angle',
-                  'description': '<p>the angle, in radians by default, or according to\nif <a href="/reference/p5/angleMode/">angleMode()</a> setting (RADIANS or DEGREES).</p>\n',
+                  'description': '<p>the angle in radians unless specified by <a href="/reference/p5/angleMode/">angleMode()</a>.</p>\n',
                   'type': 'Number'
                 }
               ],
@@ -6254,7 +6254,7 @@
               'params': [
                 {
                   'name': 'angle',
-                  'description': '<p>the angle, in radians by default, or according to\nif <a href="/reference/p5/angleMode/">angleMode()</a> setting (RADIANS or DEGREES).</p>\n',
+                  'description': '<p>the angle in radians unless specified by <a href="/reference/p5/angleMode/">angleMode()</a>.</p>\n',
                   'type': 'Number'
                 }
               ],
@@ -6266,7 +6266,7 @@
               'params': [
                 {
                   'name': 'angle',
-                  'description': '<p>the angle, in radians by default, or according to\nif <a href="/reference/p5/angleMode/">angleMode()</a> setting (RADIANS or DEGREES).</p>\n',
+                  'description': '<p>the angle in radians unless specified by <a href="/reference/p5/angleMode/">angleMode()</a>.</p>\n',
                   'type': 'Number'
                 }
               ],
@@ -52775,10 +52775,10 @@
             }
           }
           return colortext;
-        }        //gets rgba and returns a color name
+        }        //gets rgba and returs a color name
 
         _main.default.prototype._rgbColorName = function (arg) {
-          //converts rgba to hsb
+          //conversts rgba to hsb
           var hsb = _color_conversion.default._rgbaToHSBA(arg);
           //stores hsb in global variable
           originalHSB = hsb;
@@ -53393,7 +53393,7 @@
           var shapeDetails = '';
           var shapes = '';
           var totalShapes = 0;
-          //goes through every shape type in ingredients
+          //goes trhough every shape type in ingredients
           for (var x in ingredients) {
             var shapeNum = 0;
             for (var y in ingredients[x]) {
@@ -53922,7 +53922,7 @@
           if (f === 'line') {
             //make color stroke
             include.color = this.ingredients.colors.stroke;
-            //get length
+            //get lenght
             include.length = Math.round(this.dist(args[0], args[1], args[2], args[3]));
             //get position of end points
             var p1 = this._getPos(args[0], [
@@ -54035,13 +54035,8 @@
         function _canvasLocator(args, canvasWidth, canvasHeight) {
           var noRows = 10;
           var noCols = 10;
-          var x = args[0];
-          var y = args[1];
-          if (x < 0 || x >= canvasWidth || y < 0 || y >= canvasHeight) {
-            return null;
-          }
-          var locX = Math.floor(x / canvasWidth * noRows);
-          var locY = Math.floor(y / canvasHeight * noCols);
+          var locX = Math.floor(args[0] / canvasWidth * noRows);
+          var locY = Math.floor(args[1] / canvasHeight * noCols);
           if (locX === noRows) {
             locX = locX - 1;
           }
@@ -54204,7 +54199,7 @@
         function _shapeDetails(idT, ingredients) {
           var shapeDetails = '';
           var shapeNumber = 0;
-          //goes through every shape type in ingredients
+          //goes trhough every shape type in ingredients
           for (var x in ingredients) {
             //and for every shape
             for (var y in ingredients[x]) {
@@ -54229,7 +54224,7 @@
         function _shapeList(idT, ingredients) {
           var shapeList = '';
           var shapeNumber = 0;
-          //goes through every shape type in ingredients
+          //goes trhough every shape type in ingredients
           for (var x in ingredients) {
             for (var y in ingredients[x]) {
               //it creates a line in a list
@@ -59315,7 +59310,7 @@
  * @property {String} VERSION
  * @final
  */
-        var VERSION = '1.11.9';
+        var VERSION = '1.11.3';
         // GRAPHICS RENDERER
         /**
  * The default, two-dimensional renderer.
@@ -59327,7 +59322,7 @@
         /**
  * One of the two render modes in p5.js, used for computationally intensive tasks like 3D rendering and shaders.
  *
- * `WEBGL` differs from the default <a href="/reference/p5/P2D">`P2D`</a> renderer in the following ways:
+ * `WEBGL` differs from the default <a href="/reference/#/p5/P2D">`P2D`</a> renderer in the following ways:
  *
  * - **Coordinate System** - When drawing in `WEBGL` mode, the origin point (0,0,0) is located at the center of the screen, not the top-left corner. See <a href="https://p5js.org/tutorials/coordinates-and-transformations/">the tutorial page about coordinates and transformations</a>.
  * - **3D Shapes** - `WEBGL` mode can be used to draw 3-dimensional shapes like <a href="#/p5/box">box()</a>, <a href="#/p5/sphere">sphere()</a>, <a href="#/p5/cone">cone()</a>, and <a href="https://p5js.org/reference/#3D%20Primitives">more</a>. See <a href="https://p5js.org/tutorials/custom-geometry/">the tutorial page about custom geometry</a> to make more complex objects.
@@ -60149,7 +60144,7 @@
         /**
  * AUTO allows us to automatically set the width or height of an element (but not both),
  * based on the current height and width of the element. Only one parameter can
- * be passed to the <a href="/reference/p5.Element/size">size</a> function as AUTO, at a time.
+ * be passed to the <a href="/reference/#/p5.Element/size">size</a> function as AUTO, at a time.
  *
  * @property {String} AUTO
  * @final
@@ -61896,7 +61891,7 @@
  * in an `Object`.
  *
  * For example, calling `getURLParams()` in a sketch hosted at the URL
- * `https://p5js.org?year=2014&month=May&day=15` returns
+ * `http://p5js.org?year=2014&month=May&day=15` returns
  * `{ year: 2014, month: 'May', day: 15 }`.
  *
  * @method getURLParams
@@ -62355,7 +62350,7 @@
               var referenceSection = methodParts.length > 1 ? ''.concat(methodParts[0], '.').concat(methodParts[1]) : 'p5';
               var funcName = methodParts.length === 1 ? func : methodParts.slice(2).join('/');
               //Whenever func having p5.[Class] is encountered, we need to have the error link as mentioned below else different link
-              funcName.startsWith('p5.') ? msgWithReference = ''.concat(message, ' (https://p5js.org/reference/').concat(referenceSection, '.').concat(funcName, ')') : msgWithReference = ''.concat(message, ' (https://p5js.org/reference/').concat(referenceSection, '/').concat(funcName, ')');
+              funcName.startsWith('p5.') ? msgWithReference = ''.concat(message, ' (http://p5js.org/reference/').concat(referenceSection, '.').concat(funcName, ')') : msgWithReference = ''.concat(message, ' (http://p5js.org/reference/').concat(referenceSection, '/').concat(funcName, ')');
             }
             return msgWithReference;
           };
@@ -63658,7 +63653,7 @@
           };
           /**
    * Converts code written by the user to an array
-   * every element of which is a separate line of code.
+   * every element of which is a seperate line of code.
    *
    * @method codeToLines
    * @private
@@ -65826,7 +65821,6 @@
             //////////////////////////////////////////////
             // PUBLIC p5 PROPERTIES AND METHODS
             //////////////////////////////////////////////
-            this._isGlobal = !sketch;
             /**
      * A function that's called once to load assets before the sketch runs.
      *
@@ -66072,6 +66066,7 @@
             this._glAttributes = null;
             this._requestAnimId = 0;
             this._preloadCount = 0;
+            this._isGlobal = false;
             this._loop = true;
             this._startListener = null;
             this._initializeInstanceVariables();
@@ -66482,10 +66477,21 @@
                 p5.instance = null;
               }
             };
+            // ensure correct reporting of window dimensions
+            this._updateWindowSize();
+            // call any registered init functions
+            this._registeredMethods.init.forEach(function (f) {
+              if (typeof f !== 'undefined') {
+                f.call(this);
+              }
+            }, this);
+            // Set up promise preloads
+            this._setupPromisePreloads();
             var friendlyBindGlobal = this._createFriendlyGlobalFunctionBinder();
             // If the user has created a global setup or draw function,
             // assume "global" mode and make everything global (i.e. on the window)
-            if (this._isGlobal) {
+            if (!sketch) {
+              this._isGlobal = true;
               p5.instance = this;
               // Loop through methods on the prototype and attach them to the window
               for (var p in p5.prototype) {
@@ -66517,14 +66523,8 @@
               // Run a check to see if the user has misspelled 'setup', 'draw', etc
               // detects capitalization mistakes only ( Setup, SETUP, MouseClicked, etc)
               p5._checkForUserDefinedFunctions(this);
-            }            // ensure correct reporting of window dimensions
+            }            // Bind events to window (not using container div bc key events don't work)
 
-            this._updateWindowSize();
-            // call any registered init functions
-            this.callRegisteredHooksFor('init');
-            // Set up promise preloads
-            this._setupPromisePreloads();
-            // Bind events to window (not using container div bc key events don't work)
             for (var e in this._events) {
               var f = this['_on'.concat(e)];
               if (f) {
@@ -66685,9 +66685,7 @@
                             value: newValue,
                             writable: true
                           });
-                          if (!p5.disableFriendlyErrors) {
-                            log('You just changed the value of "'.concat(prop, '", which was a p5 function. This could cause problems later if you\'re not careful.'));
-                          }
+                          log('You just changed the value of "'.concat(prop, '", which was a p5 function. This could cause problems later if you\'re not careful.'));
                         }
                       });
                     } catch (e) {
@@ -70621,7 +70619,6 @@
                       }
                     }
                     this._doFillStrokeClose(closeShape);
-                    this.drawingContext.closePath();
                   }
                 }
                 isCurve = false;
@@ -72684,10 +72681,7 @@
  *
  * The fifth and sixth parameters, `start` and `stop`, set the angles
  * between which to draw the arc. Arcs are always drawn clockwise from
- * `start` to `stop`. The fifth and sixth parameters, start and stop, set the
- * angles between which to draw the arc. Arcs are always drawn clockwise from
- * start to stop. By default, angles are given in radians, but if angleMode
- * (DEGREES) is set, the function interprets the values in degrees.
+ * `start` to `stop`. Angles are always given in radians.
  *
  * The seventh parameter, `mode`, is optional. It determines the arc's fill
  * style. The fill modes are a semi-circle (`OPEN`), a closed semi-circle
@@ -83004,7 +82998,7 @@
           return addElement(elt, this);
         };
         /**
- * Creates a paragraph element.
+ * Creates a `&lt;p&gt;&lt;/p&gt;` element.
  *
  * `&lt;p&gt;&lt;/p&gt;` elements are commonly used for paragraph-length text.
  *
@@ -83214,7 +83208,7 @@
  *   background(200);
  *
  *   // Create an anchor element that links to p5js.org.
- *   let a = createA('https://p5js.org/', 'p5*js');
+ *   let a = createA('http://p5js.org/', 'p5*js');
  *   a.position(25, 35);
  *
  *   describe('The text "p5*js" written at the center of a gray square.');
@@ -83229,7 +83223,7 @@
  *
  *   // Create an anchor tag that links to p5js.org.
  *   // Open the link in a new tab.
- *   let a = createA('https://p5js.org/', 'p5*js', '_blank');
+ *   let a = createA('http://p5js.org/', 'p5*js', '_blank');
  *   a.position(25, 35);
  *
  *   describe('The text "p5*js" written at the center of a gray square.');
@@ -84598,7 +84592,7 @@
  *     let y = i * 20;
  *
  *     // Draw the image.
- *     image(images[i], 0, y, 100, 100);
+ *     image(img, 0, y, 100, 100);
  *   }
  *
  *   describe('A gray square with a file input beneath it. If the user selects multiple image files to load, they are displayed on the square.');
@@ -84674,7 +84668,8 @@
               var sourceEl = document.createElement('source');
               sourceEl.setAttribute('src', mediaSource);
               elt.appendChild(sourceEl);
-            }
+            }            // If callback is provided, attach to element
+
           } catch (err) {
             _didIteratorError9 = true;
             _iteratorError9 = err;
@@ -84688,6 +84683,13 @@
                 throw _iteratorError9;
               }
             }
+          }
+          if (typeof callback === 'function') {
+            var callbackHandler = function callbackHandler() {
+              callback();
+              elt.removeEventListener('canplaythrough', callbackHandler);
+            };
+            elt.addEventListener('canplaythrough', callbackHandler);
           }
           var mediaEl = addElement(elt, pInst, true);
           mediaEl.loadedmetadata = false;
@@ -84704,14 +84706,6 @@
             }
             mediaEl.loadedmetadata = true;
           });
-          // If callback is provided, attach to element
-          if (typeof callback === 'function') {
-            var callbackHandler = function callbackHandler() {
-              callback(mediaEl);
-              elt.removeEventListener('canplaythrough', callbackHandler);
-            };
-            elt.addEventListener('canplaythrough', callbackHandler);
-          }
           return mediaEl;
         }        /**
  * Creates a `&lt;video&gt;` element for simple audio/video playback.
@@ -89633,12 +89627,10 @@
  * </div>
  */
         _main.default.prototype._onkeydown = function (e) {
-          // Ignore repeated key events when holding down a key
           if (e.repeat) {
-            this._setProperty('isKeyRepeated', true);
+            // Ignore repeated key events when holding down a key
             return;
           }
-          this._setProperty('isKeyRepeated', false);
           this._setProperty('isKeyPressed', true);
           this._setProperty('keyIsPressed', true);
           this._setProperty('keyCode', e.which);
@@ -89972,7 +89964,7 @@
  * </div>
  */
         _main.default.prototype._onkeypress = function (e) {
-          if (e.which === this._lastKeyCodeTyped && this.isKeyRepeated) {
+          if (e.which === this._lastKeyCodeTyped) {
             // prevent multiple firings
             return;
           }
@@ -91033,16 +91025,15 @@
         _main.default.prototype._updateNextMouseCoords = function (e) {
           if (this._curElement !== null && (!e.touches || e.touches.length > 0)) {
             var mousePos = getMousePos(this._curElement.elt, this.width, this.height, e);
+            this._setProperty('movedX', e.movementX);
+            this._setProperty('movedY', e.movementY);
             this._setProperty('mouseX', mousePos.x);
             this._setProperty('mouseY', mousePos.y);
             this._setProperty('winMouseX', mousePos.winX);
             this._setProperty('winMouseY', mousePos.winY);
-            var deltaX = this.mouseX - this.pmouseX;
-            var deltaY = this.mouseY - this.pmouseY;
-            this._setProperty('movedX', deltaX);
-            this._setProperty('movedY', deltaY);
           }
           if (!this._hasMouseInteracted) {
+            // For first draw, make previous and next equal
             this._updateMouseCoords();
             this._setProperty('_hasMouseInteracted', true);
           }
@@ -91991,7 +91982,7 @@
  *   background(200);
  *
  *   // Draw the circle
- *   circle(50, 50, circleSize);
+ *   circle(circleSize, 50, 50);
  * }
  *
  * // Increment circleSize when the user scrolls the mouse wheel.
@@ -95433,7 +95424,7 @@
  * destination rectangle. This may have the effect of zooming into the
  * subsection.
  *
- * The tenth and eleventh parameters, `xAlign` and `yAlign`, are also
+ * The tenth and eleventh paremeters, `xAlign` and `yAlign`, are also
  * optional. They determine how to align the fitted subsection. `xAlign` can
  * be set to either `LEFT`, `RIGHT`, or `CENTER`. `yAlign` can be set to
  * either `TOP`, `BOTTOM`, or `CENTER`. By default, both `xAlign` and `yAlign`
@@ -96870,7 +96861,7 @@
      *   // Display the image.
      *   image(img, 17, 17);
      *
-     *   describe('A square with a horizontal color gradient from black to white drawn on a gray background.');
+     *   describe('A square with a horiztonal color gradient from black to white drawn on a gray background.');
      * }
      * </code>
      * </div>
@@ -99206,7 +99197,7 @@
  *   // Update the canvas.
  *   updatePixels();
  *
- *   describe('A horizontal color gradient from black to white.');
+ *   describe('A horiztonal color gradient from black to white.');
  * }
  * </code>
  * </div>
@@ -99957,7 +99948,7 @@
  *   //and has a header specifying the columns labels
  *   table = loadTable('assets/mammals.csv', 'csv', 'header');
  *   //the file can be remote
- *   //table = loadTable("https://p5js.org/reference/assets/mammals.csv",
+ *   //table = loadTable("http://p5js.org/reference/assets/mammals.csv",
  *   //                  "csv", "header");
  * }
  *
@@ -103189,7 +103180,7 @@
     *
     * function preload() {
     *   // table is comma separated value "CSV"
-    *   // and has specifying header for column labels
+    *   // and has specifiying header for column labels
     *   table = loadTable('assets/mammals.csv', 'csv', 'header');
     * }
     *
@@ -103300,7 +103291,7 @@
     *
     * function preload() {
     *   // table is comma separated value "CSV"
-    *   // and has specifying header for column labels
+    *   // and has specifiying header for column labels
     *   table = loadTable('assets/mammals.csv', 'csv', 'header');
     * }
     *
@@ -112037,12 +112028,10 @@
  *
  * `cos()` is useful for many geometric tasks in creative coding. The values
  * returned oscillate between -1 and 1 as the input angle increases. `cos()`
- * calculates the cosine of an angle, using radians by default, or according to
- * if <a href="#/p5/angleMode">angleMode()</a> setting (RADIANS or DEGREES).
+ * takes into account the current <a href="#/p5/angleMode">angleMode()</a>.
  *
  * @method cos
- * @param  {Number} angle the angle, in radians by default, or according to
- * if <a href="/reference/p5/angleMode/">angleMode()</a> setting (RADIANS or DEGREES).
+ * @param  {Number} angle the angle in radians unless specified by <a href="/reference/p5/angleMode/">angleMode()</a>.
  * @return {Number}       cosine of the angle.
  *
  * @example
@@ -112118,12 +112107,10 @@
  *
  * `sin()` is useful for many geometric tasks in creative coding. The values
  * returned oscillate between -1 and 1 as the input angle increases. `sin()`
- * calculates the sine of an angle, using radians by default, or according to
- * if <a href="#/p5/angleMode">angleMode()</a> setting (RADIANS or DEGREES).
+ * takes into account the current <a href="#/p5/angleMode">angleMode()</a>.
  *
  * @method sin
- * @param  {Number} angle the angle, in radians by default, or according to
- * if <a href="/reference/p5/angleMode/">angleMode()</a> setting (RADIANS or DEGREES).
+ * @param  {Number} angle the angle in radians unless specified by <a href="/reference/p5/angleMode/">angleMode()</a>.
  * @return {Number}       sine of the angle.
  *
  * @example
@@ -112199,13 +112186,11 @@
  *
  * `tan()` is useful for many geometric tasks in creative coding. The values
  * returned range from -Infinity to Infinity and repeat periodically as the
- * input angle increases. `tan()` calculates the tan of an angle, using radians
- * by default, or according to
- * if <a href="#/p5/angleMode">angleMode()</a> setting (RADIANS or DEGREES).
+ * input angle increases. `tan()` takes into account the current
+ * <a href="#/p5/angleMode">angleMode()</a>.
  *
  * @method tan
- * @param  {Number} angle the angle, in radians by default, or according to
- * if <a href="/reference/p5/angleMode/">angleMode()</a> setting (RADIANS or DEGREES).
+ * @param  {Number} angle the angle in radians unless specified by <a href="/reference/p5/angleMode/">angleMode()</a>.
  * @return {Number}       tangent of the angle.
  *
  * @example
@@ -112292,7 +112277,7 @@
  *
  *   background(200);
  *
- *   // Calculate the angle conversion.
+ *   // Caclulate the angle conversion.
  *   let deg = 45;
  *   let rad = radians(deg);
  *
@@ -112767,7 +112752,7 @@
  *
  * Note: Font size is measured in pixels.
  *
- * Calling `textSize()` without an argument returns the current size.
+ * Calling `textSize()` without an arugment returns the current size.
  *
  * @method textSize
  * @param {Number} size size of the letters in units of pixels.
@@ -123530,7 +123515,7 @@
  * three parameters, `v1`, `v2`, and `v3`, set the light’s color using the
  * current <a href="#/p5/colorMode">colorMode()</a>. The last parameter,
  * `direction` sets the light’s direction using a
- *  <a href="#/p5.Vector">p5.Vector</a> object. For example,
+ * <a href="#/p5.Geometry">p5.Geometry</a> object. For example,
  * `directionalLight(255, 0, 0, lightDir)` creates a red `(255, 0, 0)` light
  * that shines in the direction the `lightDir` vector points.
  *
@@ -131959,7 +131944,6 @@
                 centerZ -= this.eyeZ;
                 var rotation = _main.default.Matrix.identity(this._renderer._pInst);
                 rotation.rotate(this._renderer._pInst._toRadians(a), x, y, z);
-                // Apply the rotation matrix to the center vector
                 /* eslint-disable max-len */
                 var rotatedCenter = [
                   centerX * rotation.mat4[0] + centerY * rotation.mat4[4] + centerZ * rotation.mat4[8],
@@ -131967,17 +131951,11 @@
                   centerX * rotation.mat4[2] + centerY * rotation.mat4[6] + centerZ * rotation.mat4[10]
                 ];
                 /* eslint-enable max-len */
-                // Translate the rotated center back to world coordinates
+                // add eye position back into center
                 rotatedCenter[0] += this.eyeX;
                 rotatedCenter[1] += this.eyeY;
                 rotatedCenter[2] += this.eyeZ;
-                // Rotate the up vector to keep the correct camera orientation
-                /* eslint-disable max-len */
-                var upX = this.upX * rotation.mat4[0] + this.upY * rotation.mat4[4] + this.upZ * rotation.mat4[8];
-                var upY = this.upX * rotation.mat4[1] + this.upY * rotation.mat4[5] + this.upZ * rotation.mat4[9];
-                var upZ = this.upX * rotation.mat4[2] + this.upY * rotation.mat4[6] + this.upZ * rotation.mat4[10];
-                /* eslint-enable max-len */
-                this.camera(this.eyeX, this.eyeY, this.eyeZ, rotatedCenter[0], rotatedCenter[1], rotatedCenter[2], upX, upY, upZ);
+                this.camera(this.eyeX, this.eyeY, this.eyeZ, rotatedCenter[0], rotatedCenter[1], rotatedCenter[2], this.upX, this.upY, this.upZ);
               }              /**
     * Rotates the camera in a clockwise/counter-clockwise direction.
     *
@@ -141272,7 +141250,7 @@
         defineStrokeJoinEnum('ROUND', 0);
         defineStrokeJoinEnum('MITER', 1);
         defineStrokeJoinEnum('BEVEL', 2);
-        var lightingShader = '#define PI 3.141592\n\nprecision highp float;\nprecision highp int;\n\nuniform mat4 uViewMatrix;\n\nuniform bool uUseLighting;\n\nuniform int uAmbientLightCount;\nuniform vec3 uAmbientColor[5];\nuniform mat3 uCameraRotation;\nuniform int uDirectionalLightCount;\nuniform vec3 uLightingDirection[5];\nuniform vec3 uDirectionalDiffuseColors[5];\nuniform vec3 uDirectionalSpecularColors[5];\n\nuniform int uPointLightCount;\nuniform vec3 uPointLightLocation[5];\nuniform vec3 uPointLightDiffuseColors[5];\t\nuniform vec3 uPointLightSpecularColors[5];\n\nuniform int uSpotLightCount;\nuniform float uSpotLightAngle[5];\nuniform float uSpotLightConc[5];\nuniform vec3 uSpotLightDiffuseColors[5];\nuniform vec3 uSpotLightSpecularColors[5];\nuniform vec3 uSpotLightLocation[5];\nuniform vec3 uSpotLightDirection[5];\n\nuniform bool uSpecular;\nuniform float uShininess;\nuniform float uMetallic;\n\nuniform float uConstantAttenuation;\nuniform float uLinearAttenuation;\nuniform float uQuadraticAttenuation;\n\n// setting from  _setImageLightUniforms()\n// boolean to initiate the calculateImageDiffuse and calculateImageSpecular\nuniform bool uUseImageLight;\n// texture for use in calculateImageDiffuse\nuniform sampler2D environmentMapDiffused;\n// texture for use in calculateImageSpecular\nuniform sampler2D environmentMapSpecular;\n\nconst float specularFactor = 2.0;\nconst float diffuseFactor = 0.73;\n\nstruct LightResult {\n  float specular;\n  float diffuse;\n};\n\nfloat _phongSpecular(\n  vec3 lightDirection,\n  vec3 viewDirection,\n  vec3 surfaceNormal,\n  float shininess) {\n\n  vec3 R = reflect(lightDirection, surfaceNormal);\n  return pow(max(0.0, dot(R, viewDirection)), shininess);\n}\n\nfloat _lambertDiffuse(vec3 lightDirection, vec3 surfaceNormal) {\n  return max(0.0, dot(-lightDirection, surfaceNormal));\n}\n\nLightResult _light(vec3 viewDirection, vec3 normal, vec3 lightVector, float shininess, float metallic) {\n\n  vec3 lightDir = normalize(lightVector);\n\n  //compute our diffuse & specular terms\n  LightResult lr;\n  float specularIntensity = mix(1.0, 0.4, metallic);\n  float diffuseIntensity = mix(1.0, 0.1, metallic);\n  if (uSpecular)\n    lr.specular = (_phongSpecular(lightDir, viewDirection, normal, shininess)) * specularIntensity;\n    lr.diffuse = _lambertDiffuse(lightDir, normal) * diffuseIntensity;\n  return lr;\n}\n\n// converts the range of "value" from [min1 to max1] to [min2 to max2]\nfloat map(float value, float min1, float max1, float min2, float max2) {\n  return min2 + (value - min1) * (max2 - min2) / (max1 - min1);\n}\n\nvec2 mapTextureToNormal( vec3 v ){\n  // x = r sin(phi) cos(theta)   \n  // y = r cos(phi)  \n  // z = r sin(phi) sin(theta)\n  float phi = acos( v.y );\n  // if phi is 0, then there are no x, z components\n  float theta = 0.0;\n  // else \n  theta = acos(v.x / sin(phi));\n  float sinTheta = v.z / sin(phi);\n  if (sinTheta < 0.0) {\n    // Turn it into -theta, but in the 0-2PI range\n    theta = 2.0 * PI - theta;\n  }\n  theta = theta / (2.0 * 3.14159);\n  phi = phi / 3.14159 ;\n  \n  vec2 angles = vec2( fract(theta + 0.25), 1.0 - phi );\n  return angles;\n}\n\n\nvec3 calculateImageDiffuse(vec3 vNormal, vec3 vViewPosition, float metallic){\n  // make 2 separate builds \n  vec3 worldCameraPosition =  vec3(0.0, 0.0, 0.0);  // hardcoded world camera position\n  vec3 worldNormal = normalize(vNormal * uCameraRotation);\n  vec2 newTexCoor = mapTextureToNormal( worldNormal );\n  vec4 texture = TEXTURE( environmentMapDiffused, newTexCoor );\n  // this is to make the darker sections more dark\n  // png and jpg usually flatten the brightness so it is to reverse that\n  return mix(smoothstep(vec3(0.0), vec3(1.0), texture.xyz), vec3(0.0), metallic);\n}\n\nvec3 calculateImageSpecular(vec3 vNormal, vec3 vViewPosition, float shininess, float metallic){\n  vec3 worldCameraPosition =  vec3(0.0, 0.0, 0.0);\n  vec3 worldNormal = normalize(vNormal);\n  vec3 lightDirection = normalize( vViewPosition - worldCameraPosition );\n  vec3 R = reflect(lightDirection, worldNormal) * uCameraRotation;\n  vec2 newTexCoor = mapTextureToNormal( R );\n#ifdef WEBGL2\n  // In p5js the range of shininess is >= 1,\n  // Therefore roughness range will be ([0,1]*8)*20 or [0, 160]\n  // The factor of 8 is because currently the getSpecularTexture\n  // only calculated 8 different levels of roughness\n  // The factor of 20 is just to spread up this range so that,\n  // [1, max] of shininess is converted to [0,160] of roughness\n  float roughness = 20. / shininess;\n  vec4 outColor = textureLod(environmentMapSpecular, newTexCoor, roughness * 8.);\n#else\n  vec4 outColor = TEXTURE(environmentMapSpecular, newTexCoor);\n#endif\n  // this is to make the darker sections more dark\n  // png and jpg usually flatten the brightness so it is to reverse that\n  return mix(\n    pow(outColor.xyz, vec3(10)),\n    pow(outColor.xyz, vec3(1.2)),\n    metallic \n  );\n}\n\nvoid totalLight(\n  vec3 modelPosition,\n  vec3 normal,\n  float shininess,\n  float metallic,\n  out vec3 totalDiffuse,\n  out vec3 totalSpecular\n) {\n\n  totalSpecular = vec3(0.0);\n\n  if (!uUseLighting) {\n    totalDiffuse = vec3(1.0);\n    return;\n  }\n\n  totalDiffuse = vec3(0.0);\n\n  vec3 viewDirection = normalize(-modelPosition);\n\n  for (int j = 0; j < 5; j++) {\n    if (j < uDirectionalLightCount) {\n      vec3 lightVector = (uViewMatrix * vec4(uLightingDirection[j], 0.0)).xyz;\n      vec3 lightColor = uDirectionalDiffuseColors[j];\n      vec3 specularColor = uDirectionalSpecularColors[j];\n      LightResult result = _light(viewDirection, normal, lightVector, shininess, metallic);\n      totalDiffuse += result.diffuse * lightColor;\n      totalSpecular += result.specular * lightColor * specularColor;\n    }\n\n    if (j < uPointLightCount) {\n      vec3 lightPosition = (uViewMatrix * vec4(uPointLightLocation[j], 1.0)).xyz;\n      vec3 lightVector = modelPosition - lightPosition;\n      //calculate attenuation\n      float lightDistance = length(lightVector);\n      float lightFalloff = 1.0 / (uConstantAttenuation + lightDistance * uLinearAttenuation + (lightDistance * lightDistance) * uQuadraticAttenuation);\n      vec3 lightColor = lightFalloff * uPointLightDiffuseColors[j];\n      vec3 specularColor = lightFalloff * uPointLightSpecularColors[j];\n\n      LightResult result = _light(viewDirection, normal, lightVector, shininess, metallic);\n      totalDiffuse += result.diffuse * lightColor;\n      totalSpecular += result.specular * lightColor * specularColor;\n    }\n\n    if(j < uSpotLightCount) {\n      vec3 lightPosition = (uViewMatrix * vec4(uSpotLightLocation[j], 1.0)).xyz;\n      vec3 lightVector = modelPosition - lightPosition;\n    \n      float lightDistance = length(lightVector);\n      float lightFalloff = 1.0 / (uConstantAttenuation + lightDistance * uLinearAttenuation + (lightDistance * lightDistance) * uQuadraticAttenuation);\n\n      vec3 lightDirection = (uViewMatrix * vec4(uSpotLightDirection[j], 0.0)).xyz;\n      float spotDot = dot(normalize(lightVector), normalize(lightDirection));\n      float spotFalloff;\n      if(spotDot < uSpotLightAngle[j]) {\n        spotFalloff = 0.0;\n      }\n      else {\n        spotFalloff = pow(spotDot, uSpotLightConc[j]);\n      }\n      lightFalloff *= spotFalloff;\n\n      vec3 lightColor = uSpotLightDiffuseColors[j];\n      vec3 specularColor = uSpotLightSpecularColors[j];\n     \n      LightResult result = _light(viewDirection, normal, lightVector, shininess, metallic);\n      \n      totalDiffuse += result.diffuse * lightColor * lightFalloff;\n      totalSpecular += result.specular * lightColor * specularColor * lightFalloff;\n    }\n  }\n\n  if( uUseImageLight ){\n    totalDiffuse += calculateImageDiffuse(normal, modelPosition, metallic);\n    totalSpecular += calculateImageSpecular(normal, modelPosition, shininess, metallic);\n  }\n\n  totalDiffuse *= diffuseFactor;\n  totalSpecular *= specularFactor;\n}\n';
+        var lightingShader = '#define PI 3.141592\n\nprecision highp float;\nprecision highp int;\n\nuniform mat4 uViewMatrix;\n\nuniform bool uUseLighting;\n\nuniform int uAmbientLightCount;\nuniform vec3 uAmbientColor[5];\nuniform mat3 uCameraRotation;\nuniform int uDirectionalLightCount;\nuniform vec3 uLightingDirection[5];\nuniform vec3 uDirectionalDiffuseColors[5];\nuniform vec3 uDirectionalSpecularColors[5];\n\nuniform int uPointLightCount;\nuniform vec3 uPointLightLocation[5];\nuniform vec3 uPointLightDiffuseColors[5];\t\nuniform vec3 uPointLightSpecularColors[5];\n\nuniform int uSpotLightCount;\nuniform float uSpotLightAngle[5];\nuniform float uSpotLightConc[5];\nuniform vec3 uSpotLightDiffuseColors[5];\nuniform vec3 uSpotLightSpecularColors[5];\nuniform vec3 uSpotLightLocation[5];\nuniform vec3 uSpotLightDirection[5];\n\nuniform bool uSpecular;\nuniform float uShininess;\nuniform float uMetallic;\n\nuniform float uConstantAttenuation;\nuniform float uLinearAttenuation;\nuniform float uQuadraticAttenuation;\n\n// setting from  _setImageLightUniforms()\n// boolean to initiate the calculateImageDiffuse and calculateImageSpecular\nuniform bool uUseImageLight;\n// texture for use in calculateImageDiffuse\nuniform sampler2D environmentMapDiffused;\n// texture for use in calculateImageSpecular\nuniform sampler2D environmentMapSpecular;\n\nconst float specularFactor = 2.0;\nconst float diffuseFactor = 0.73;\n\nstruct LightResult {\n  float specular;\n  float diffuse;\n};\n\nfloat _phongSpecular(\n  vec3 lightDirection,\n  vec3 viewDirection,\n  vec3 surfaceNormal,\n  float shininess) {\n\n  vec3 R = reflect(lightDirection, surfaceNormal);\n  return pow(max(0.0, dot(R, viewDirection)), shininess);\n}\n\nfloat _lambertDiffuse(vec3 lightDirection, vec3 surfaceNormal) {\n  return max(0.0, dot(-lightDirection, surfaceNormal));\n}\n\nLightResult _light(vec3 viewDirection, vec3 normal, vec3 lightVector, float shininess, float metallic) {\n\n  vec3 lightDir = normalize(lightVector);\n\n  //compute our diffuse & specular terms\n  LightResult lr;\n  float specularIntensity = mix(1.0, 0.4, metallic);\n  float diffuseIntensity = mix(1.0, 0.1, metallic);\n  if (uSpecular)\n    lr.specular = (_phongSpecular(lightDir, viewDirection, normal, shininess)) * specularIntensity;\n    lr.diffuse = _lambertDiffuse(lightDir, normal) * diffuseIntensity;\n  return lr;\n}\n\n// converts the range of "value" from [min1 to max1] to [min2 to max2]\nfloat map(float value, float min1, float max1, float min2, float max2) {\n  return min2 + (value - min1) * (max2 - min2) / (max1 - min1);\n}\n\nvec2 mapTextureToNormal( vec3 v ){\n  // x = r sin(phi) cos(theta)   \n  // y = r cos(phi)  \n  // z = r sin(phi) sin(theta)\n  float phi = acos( v.y );\n  // if phi is 0, then there are no x, z components\n  float theta = 0.0;\n  // else \n  theta = acos(v.x / sin(phi));\n  float sinTheta = v.z / sin(phi);\n  if (sinTheta < 0.0) {\n    // Turn it into -theta, but in the 0-2PI range\n    theta = 2.0 * PI - theta;\n  }\n  theta = theta / (2.0 * 3.14159);\n  phi = phi / 3.14159 ;\n  \n  vec2 angles = vec2( fract(theta + 0.25), 1.0 - phi );\n  return angles;\n}\n\n\nvec3 calculateImageDiffuse(vec3 vNormal, vec3 vViewPosition, float metallic){\n  // make 2 seperate builds \n  vec3 worldCameraPosition =  vec3(0.0, 0.0, 0.0);  // hardcoded world camera position\n  vec3 worldNormal = normalize(vNormal * uCameraRotation);\n  vec2 newTexCoor = mapTextureToNormal( worldNormal );\n  vec4 texture = TEXTURE( environmentMapDiffused, newTexCoor );\n  // this is to make the darker sections more dark\n  // png and jpg usually flatten the brightness so it is to reverse that\n  return mix(smoothstep(vec3(0.0), vec3(1.0), texture.xyz), vec3(0.0), metallic);\n}\n\nvec3 calculateImageSpecular(vec3 vNormal, vec3 vViewPosition, float shininess, float metallic){\n  vec3 worldCameraPosition =  vec3(0.0, 0.0, 0.0);\n  vec3 worldNormal = normalize(vNormal);\n  vec3 lightDirection = normalize( vViewPosition - worldCameraPosition );\n  vec3 R = reflect(lightDirection, worldNormal) * uCameraRotation;\n  vec2 newTexCoor = mapTextureToNormal( R );\n#ifdef WEBGL2\n  // In p5js the range of shininess is >= 1,\n  // Therefore roughness range will be ([0,1]*8)*20 or [0, 160]\n  // The factor of 8 is because currently the getSpecularTexture\n  // only calculated 8 different levels of roughness\n  // The factor of 20 is just to spread up this range so that,\n  // [1, max] of shininess is converted to [0,160] of roughness\n  float roughness = 20. / shininess;\n  vec4 outColor = textureLod(environmentMapSpecular, newTexCoor, roughness * 8.);\n#else\n  vec4 outColor = TEXTURE(environmentMapSpecular, newTexCoor);\n#endif\n  // this is to make the darker sections more dark\n  // png and jpg usually flatten the brightness so it is to reverse that\n  return mix(\n    pow(outColor.xyz, vec3(10)),\n    pow(outColor.xyz, vec3(1.2)),\n    metallic \n  );\n}\n\nvoid totalLight(\n  vec3 modelPosition,\n  vec3 normal,\n  float shininess,\n  float metallic,\n  out vec3 totalDiffuse,\n  out vec3 totalSpecular\n) {\n\n  totalSpecular = vec3(0.0);\n\n  if (!uUseLighting) {\n    totalDiffuse = vec3(1.0);\n    return;\n  }\n\n  totalDiffuse = vec3(0.0);\n\n  vec3 viewDirection = normalize(-modelPosition);\n\n  for (int j = 0; j < 5; j++) {\n    if (j < uDirectionalLightCount) {\n      vec3 lightVector = (uViewMatrix * vec4(uLightingDirection[j], 0.0)).xyz;\n      vec3 lightColor = uDirectionalDiffuseColors[j];\n      vec3 specularColor = uDirectionalSpecularColors[j];\n      LightResult result = _light(viewDirection, normal, lightVector, shininess, metallic);\n      totalDiffuse += result.diffuse * lightColor;\n      totalSpecular += result.specular * lightColor * specularColor;\n    }\n\n    if (j < uPointLightCount) {\n      vec3 lightPosition = (uViewMatrix * vec4(uPointLightLocation[j], 1.0)).xyz;\n      vec3 lightVector = modelPosition - lightPosition;\n      //calculate attenuation\n      float lightDistance = length(lightVector);\n      float lightFalloff = 1.0 / (uConstantAttenuation + lightDistance * uLinearAttenuation + (lightDistance * lightDistance) * uQuadraticAttenuation);\n      vec3 lightColor = lightFalloff * uPointLightDiffuseColors[j];\n      vec3 specularColor = lightFalloff * uPointLightSpecularColors[j];\n\n      LightResult result = _light(viewDirection, normal, lightVector, shininess, metallic);\n      totalDiffuse += result.diffuse * lightColor;\n      totalSpecular += result.specular * lightColor * specularColor;\n    }\n\n    if(j < uSpotLightCount) {\n      vec3 lightPosition = (uViewMatrix * vec4(uSpotLightLocation[j], 1.0)).xyz;\n      vec3 lightVector = modelPosition - lightPosition;\n    \n      float lightDistance = length(lightVector);\n      float lightFalloff = 1.0 / (uConstantAttenuation + lightDistance * uLinearAttenuation + (lightDistance * lightDistance) * uQuadraticAttenuation);\n\n      vec3 lightDirection = (uViewMatrix * vec4(uSpotLightDirection[j], 0.0)).xyz;\n      float spotDot = dot(normalize(lightVector), normalize(lightDirection));\n      float spotFalloff;\n      if(spotDot < uSpotLightAngle[j]) {\n        spotFalloff = 0.0;\n      }\n      else {\n        spotFalloff = pow(spotDot, uSpotLightConc[j]);\n      }\n      lightFalloff *= spotFalloff;\n\n      vec3 lightColor = uSpotLightDiffuseColors[j];\n      vec3 specularColor = uSpotLightSpecularColors[j];\n     \n      LightResult result = _light(viewDirection, normal, lightVector, shininess, metallic);\n      \n      totalDiffuse += result.diffuse * lightColor * lightFalloff;\n      totalSpecular += result.specular * lightColor * specularColor * lightFalloff;\n    }\n  }\n\n  if( uUseImageLight ){\n    totalDiffuse += calculateImageDiffuse(normal, modelPosition, metallic);\n    totalSpecular += calculateImageSpecular(normal, modelPosition, shininess, metallic);\n  }\n\n  totalDiffuse *= diffuseFactor;\n  totalSpecular *= specularFactor;\n}\n';
         var webgl2CompatibilityShader = '#ifdef WEBGL2\n\n#define IN in\n#define OUT out\n\n#ifdef FRAGMENT_SHADER\nout vec4 outColor;\n#define OUT_COLOR outColor\n#endif\n#define TEXTURE texture\n\n#else\n\n#ifdef FRAGMENT_SHADER\n#define IN varying\n#else\n#define IN attribute\n#endif\n#define OUT varying\n#define TEXTURE texture2D\n\n#ifdef FRAGMENT_SHADER\n#define OUT_COLOR gl_FragColor\n#endif\n\n#endif\n';
         var defaultShaders = {
           sphereMappingFrag: '#define PI 3.141592\n\nprecision highp float;\n  \nuniform sampler2D uSampler;\nuniform mat3 uNewNormalMatrix;\nuniform float uFovY;\nuniform float uAspect;\n\nvarying vec2 vTexCoord;\n  \nvoid main() {\n    float uFovX = uFovY * uAspect; \n    vec4 newTexColor = texture2D(uSampler, vTexCoord);\n    float angleY = mix(uFovY/2.0,  -uFovY/2.0, vTexCoord.y);\n    float angleX = mix(uFovX/2.0, -uFovX/2.0, vTexCoord.x);\n    vec3 rotatedNormal = vec3( angleX, angleY, 1.0 );\n    rotatedNormal = uNewNormalMatrix * normalize(rotatedNormal);\n    float temp = rotatedNormal.z;\n    rotatedNormal.z = rotatedNormal.x;\n    rotatedNormal.x = -temp;\n    vec2 suv;\n    suv.y = 0.5 + 0.5 * (-rotatedNormal.y);\n    suv.x = atan(rotatedNormal.z, rotatedNormal.x) / (2.0 * PI) + 0.5;\n    newTexColor = texture2D(uSampler, suv.xy);\n    gl_FragColor = newTexColor;\n}\n',
