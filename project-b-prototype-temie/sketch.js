@@ -1,281 +1,363 @@
-//1.music sheet lines across the page
-//2. moving piano keys
-//3. user interaction
-//4. keyboard right/wrong if/else triggers audience
-//5. trigger background color/stage anxiety
-//6. end of performance
+let musicianStories = [
+  "hover over the music to begin",
 
-//rectangle length with variance, different sizes/lengths
-//the more keys they press, more colorful the screen can become
-//array, if the sound is playing, whenever htey press a key and if the key=correct, then generate a new item in the array, dispaly as a piano square
-//reset
-//pop-up music sheet, they only look at it for 10 secs, give instructions to memorize it
-//"you have 10 seconds to memorize the music before the audience members take their seats"
-//when they get it wrong, how frustrating should it be?
-//if wrong, chaotic background, audience boos
+  "you’re a pianist backstage, about to perform for hundreds of people",
+  "back when classical music halls were filled with living, breathing flesh and souls",
+  "back when music still needed hands",
+  "back when breath became air",
+  "back when imperfection was a part of beauty",
 
-let noteSounds = [];
-let testSound;
-let booSound;
+  "the dusty air of the music hall",
+  "the audience members settling into their seats",
+  "the creaky rustles in the dark",
+  "their whispers, murmurs, coughs",
+  "the piano is already out there, waiting",
+  "that low hum of a hundred people waiting for me to walk out there and perform",
 
-let lines = [];
+  "'please turn off your cellphones'",
+  "the announcement echoes once, then disappears",
+  "the performance is about to begin",
+  "the lights are dimming now",
+  "the room is slowly becoming quiet",
+  "im about to step out onto that stage in sixty seconds",
 
-let notes = [];
-let curP = 0;
-let t = 200;
-//webcam pixel manipulation: future feature
-//let chars = ["♩", "♪", "♫", "♬", "♭", "♯"];
+  "i can feel my heart beating so fast",
+  "my fingers are starting to shake",
+  "my hands don’t feel like mine",
+  "my mouth is dry",
+  "my sleeve is sticking to my wrist",
+  "i cant do this",
+  "i cant do this",
+  "i’m wiping my palms every thirty seconds, but they just won’t stay dry",
+  "i'm waiting for something terrible to happen so i don't have to go out there",
 
-let chars2 = [
-  "a",
-  "b",
-  "c",
-  "d",
-  "e",
-  "f",
-  "g",
-  "h",
-  "i",
-  "j",
-  "k",
-  "l",
-  "m",
-  "n",
-  "o",
-  "p",
-  "q",
-  "r",
-  "s",
-  "t",
-  "u",
-  "v",
-  "w",
-  "x",
-  "y",
-  "z",
+  "just breath",
+  "*deep inhale*",
+  "*slow exhale*",
+  "eyes closed",
+  "ok...i can do this...i have to",
+  "after months of practicing, i cant back out now",
+  "is this how i play this part again? yes, no, wait, is it? no, im overthinking it.",
+  "what if my hands freeze",
+  "what if the first note comes out wrong",
+  "what if i forget everything",
+  "my chest is weighing down on me",
+  "am i going to stumble on the crescendo?",
+  "a musician's biggest fear: forgetting everything on stage",
+
+  "a lost symphony",
+  "before machines replaced hands",
+  "before the world automated classical music performances",
+  "before strings became screens",
+  "we start to become one breath",
+  "what did it feel like to truly play and create symphonies within these hallways",
+  "can you hear our synchronized breathing...",
+  "i feel the everyone's eyes glaring as my fingers touch each piano key",
+  "what will a musician's life look like in a century? when everything is mechanical and perfect",
+  "music played by humans, 1000 years ago",
+  "the notes are fast, but i can hear my own heart beating faster",
+  "if this becomes a dead art, who will keep it alive?",
+  "music played by humans, one thousand years ago",
+  "not perfect",
+  "not generated",
+  "alive",
 ];
 
+let storyIndex = 0;
+let symbolIndex = 0;
+let noteIndex = 0;
+let storyAlpha = 0;
+
+let lines = [];
+let particles = [];
+//let clefs = ["𝄞", "𝄢", "𝄡"];
+let symbols = [
+  "♩",
+  "♪",
+  "‧₊˚♪",
+  "♫",
+  "𝄞₊˚⊹˖ ܁",
+  "♬⋆.˚",
+  "𝄞⋆˚｡⋆",
+  "⊹˚♬₊⋆",
+  "♭",
+  "♫⋆｡♪ ₊˚♬",
+  "♪",
+  "⋆𝄞",
+  "♬",
+  "𝄢‧₊˚♪",
+  "𝄞₊˚⊹",
+  "𝄞⨾♬",
+  "♯",
+  "⋆.˚‧₊˚♪",
+  "𝄞",
+  "𝄢",
+  "𝄡",
+  "𝄞𝄢₊˚",
+  "♬",
+  "♫⋆｡♪",
+  "♪⋆｡",
+  "♪°",
+  "♬⋆｡",
+  "♫˚",
+  "♬⋆ ˚｡⋆",
+  "♪₊˚",
+  "♩‧₊˚",
+  "♫ ⋆｡˚",
+  "♬˙⋆",
+  "♬⟡₊˚",
+  "♫✧₊⁺",
+  "𝄞⟡⋆",
+  "♩｡･:˚",
+  "♪｡ﾟ",
+  "♬‧₊˚",
+  "♫⋆˚⟡˖",
+  "𝄞₊˚.⋆",
+  "♩⊹ ࣪ ˖",
+  "♪",
+  "♬⋆｡‧",
+  "♫₊˚⊹",
+  "𝄞⋆˙",
+  "♮⋆˚",
+];
+
+//oscillator
+let notes = [
+  146.83,
+  220.0,
+  293.66,
+  369.99,
+  196.0,
+  293.66,
+  392.0,
+  493.88,
+  220.0,
+  329.63,
+  440.0,
+  554.37,
+  146.83,
+  185.0,
+  220.0,
+  293.66,
+];
+
+let audienceSound;
+let isAudienceListening = false;
+
 function preload() {
-  testSound = loadSound("crescendo_music.mp3");
-  //noteSounds[i] = loadSound();
+  audienceSound = loadSound("audience_waiting.mp3");
 }
+function toggleAudience() {
+  isAudienceListening = !isAudienceListening;
+  if (isAudienceListening) {
+    audienceSound.loop();
+    audienceSound.setVolume(0.2, 2.0); // fade in over 2 seconds
+  } else {
+    audienceSound.setVolume(0, 2.0); // fade out
+  }
+}
+
+function mousePressed() {
+  //the current symbol from the list
+  let char = symbols[symbolIndex];
+
+  particles.push(new Particle(mouseX, mouseY, char));
+
+  //move to the next symbol for next time
+  symbolIndex = symbolIndex + 1;
+
+  //go back to 0
+  if (symbolIndex >= symbols.length) {
+    symbolIndex = 0;
+  }
+}
+
 function setup() {
   let canvas = createCanvas(800, 500);
   frameRate(30);
   canvas.parent("p5-canvas-container");
-  background(255, 200);
+
+  background(255);
   //
   for (let i = 0; i < 5; i++) {
-    lines.push(new MusicLine(0, 50 + i * 10));
+    lines.push(new MusicLine(0, -50 + i * 3));
+  }
+  for (let i = 0; i < 10; i++) {
+    lines.push(new MusicLine(-40, -200 + i * 60));
   }
 
   for (let i = 0; i < 5; i++) {
-    lines.push(new MusicLine(40, -90 + i * 2));
+    lines.push(new MusicLine(-40, -100 + i * 10));
+  }
+  for (let i = 0; i < 5; i++) {
+    lines.push(new MusicLine(150, -200 + i * 11));
   }
 
   for (let i = 0; i < 5; i++) {
-    lines.push(new MusicLine(40, -90 + i * 20));
-  }
-
-  for (let i = 0; i < 5; i++) {
-    lines.push(new MusicLine(150, -150 + i * 12));
-  }
-
-  for (let i = 0; i < 5; i++) {
-    lines.push(new MusicLine(400, -200 + i * 15));
-  }
-
-  for (let i = 0; i < 5; i++) {
-    lines.push(new MusicLine(-190, 240 + i * 12));
+    lines.push(new MusicLine(420, -100 + i * 10));
   }
   for (let i = 0; i < 5; i++) {
-    lines.push(new MusicLine(-40, 200 + i * 8));
+    lines.push(new MusicLine(-190, 240 + i * 10));
   }
   for (let i = 0; i < 5; i++) {
-    lines.push(new MusicLine(-40, 200 + i * 1));
+    lines.push(new MusicLine(-40, 200 + i * 12));
+  }
+  for (let i = 0; i < 5; i++) {
+    lines.push(new MusicLine(0, 420 + i * 3));
+  }
+  for (let i = 0; i < 5; i++) {
+    lines.push(new MusicLine(2, 150 + i * 10));
   }
 
-  //
-  for (let i = 0; i < 30; i++) {
-    let pX = i * 45;
-
-    let colors = [
-      "#F473A4",
-      "#A8DA6E",
-      "#44A1EB",
-      "#FFEB3B",
-      "#62DAE5",
-      "#E06ED6",
-      "#FFC107",
-      "#CC5CE0",
-      "#FFF06E",
-      "#03A9F4",
-      "#847DFC",
-      "#8BC34A",
-      "#F76C8B",
-      "#99EBEB",
-      "#F6A734",
-      "#CDDC39",
-      "#AF87FF",
-      "#E36DEA",
-    ];
-    let col = colors[i % colors.length];
-
-    notes.push(new KeyNote(random(100, 700), random(50, 200), pX, col));
+  //right corner
+  for (let i = 0; i < 5; i++) {
+    lines.push(new MusicLine(-580, 0 + i * 5));
   }
 
-  for (let i = 0; i < notes.length; i++) {
-    notes[i].display();
-    notes[i].update();
-  }
+  //button for audience sounds
+
+  btn = createButton("𝄞 listen to the hall waiting ♪");
+  btn.position(width / 3, height - 30);
+  btn.style("background", "transparent");
+  btn.style("border", "none");
+  btn.style("color", "rgba(255, 20, 150, 0.6)"); // Faded pink
+  btn.style("font-family", "Georgia, serif");
+  btn.style("font-style", "italic");
+  btn.style("font-size", "16px");
+  btn.style("cursor", "pointer");
+  btn.style("letter-spacing", "2px");
+  btn.mousePressed(toggleAudience);
 }
 
 function draw() {
-  background(255, 100);
+  background(10, 10, 50, 40);
+
   for (let i = 0; i < lines.length; i++) {
     lines[i].display();
   }
 
-  fill(255, 40);
-  noStroke();
-  rect(0, 0, width, height);
+  let hovered = false;
+  for (let i = 0; i < particles.length; i++) {
+    particles[i].update();
+    particles[i].display();
 
-  for (let i = 0; i < notes.length; i++) {
-    notes[i].display();
-    notes[i].update();
-
-    //console.log(notes[i]);
-  }
-
-  textAlign(CENTER, CENTER);
-
-  textFont("monospace");
-  textStyle(BOLD);
-  textSize(20);
-
-  fill(0); // Main text color
-  text(
-    "Press the letters in the alphabet to start playing",
-    width / 2,
-    height / 2
-  );
-  fill("#A8DA6E"); // Using one of your green colors from your array
-
-  text(
-    "Press the letters in the alphabet to start playing",
-    width / 2,
-    height / 2
-  );
-}
-
-//
-
-class KeyNote {
-  constructor(startX, startY, pianoX, col) {
-    this.drawX = pianoX;
-    this.drawY = 350;
-    this.c = col;
-    this.isPlayed = false;
-    this.speedX = random(-1, 1);
-    this.speedY = random(-3, -1);
-  }
-  update() {
-    if (this.isPlayed) {
-      // drawX = this.x + noise(frameCount * 0.02, this.y) * 50;
-      // drawY = this.y + sin(frameCount * 0.1) * 30;
-      if (this.drawX < 0 || this.drawX > width) {
-        this.speedX = -this.speedX;
-        // this.speedY = -this.speedY;
-      } else if (this.drawY < 0 || this.drawY > height) {
-        // this.speedX = this.speedX;
-        this.speedY = -this.speedY;
-      }
-      this.drawX = this.drawX + this.speedX;
-      this.drawY = this.drawY + this.speedY;
-    }
-  }
-  display() {
-    noStroke();
-    fill(this.c);
-    let len = map(noise(frameCount / 10 + this.drawX), 0, 1, 120, 200);
-    //random(120, 200);
-    let wid = map(noise(frameCount / 10 + this.speedX), 0, 1, 30, 40);
-    //let wid = random(30, 40);
-    // random(5, 50)
-    let offsetY = map(noise(frameCount / 20 + this.drawX), 0, 1, 5, 80);
-    rect(this.drawX, this.drawY - offsetY, wid, len);
-  }
-}
-
-function keyPressed() {
-  //   for (let i = 0; i < 0; i++) {
-  //     let pX = i * 45;
-  //     let colors = ["#FF3264", "#FFE600", "#00B4FF", "#FF7800"];
-  //     let col = colors[i % 4];
-  //     notes.push(new KeyNote(random(100, 700), random(50, 200), pX, col));
-  //   }
-
-  // Each key press snaps the next chaotic note into the piano line
-  for (let i = 0; i < notes.length; i++) {
-    if (notes[i].isPlayed == false) {
-      notes[i].isPlayed = true;
-      break;
-    }
-  }
-
-  if (!testSound.isPlaying()) {
-    testSound.play();
-  }
-  //testSound.stop();
-
-  // if played correct
-
-  if (key === chars2[curP]) {
-    testSound.rate(1.0);
-    testSound.play();
-
-    if (t < 200) {
-      t += 50;
+    let d = dist(mouseX, mouseY, particles[i].x, particles[i].y);
+    if (d < 50) {
+      currentStory = particles[i].story;
+      hovered = true;
+      particles[i].isHighlighted = true;
     } else {
-      testSound.rate(0.6);
-      //testSound.stop();
-      testSound.play();
-      t = 250;
+      particles[i].isHighlighted = false;
     }
+  }
 
-    // console.log("correct and go to next");
-    // background(255, 100);
-    curP = curP + 1;
+  if (hovered) {
+    //fade in
+    storyAlpha = lerp(storyAlpha, 255, 0.1);
   } else {
-    if (t > 50) {
-      t -= 50;
-    } else {
-      t = 40;
-    }
-    // console.log("wrong");
+    //fade out
+    storyAlpha = lerp(storyAlpha, 0, 0.05);
   }
 
-  if (curP >= chars2.length) {
-    curP = 0;
-    // console.log("reset");
+  if (storyAlpha > 1) {
+    push();
+    fill(255, storyAlpha);
+    textAlign(CENTER);
+    textSize(18);
+    textFont("Georgia");
+    text(currentStory, width / 2, height - 40);
+    pop();
+  }
+  //console.log("X: " + mouseX + " Y: " + mouseY);
+}
+
+class Particle {
+  constructor(x, y, char) {
+    this.x = x;
+    this.y = y;
+    this.char = char;
+    this.xSpd = random(-0.9, 0.9);
+    this.ySpd = random(-0.9, 0.9);
+    this.baseSize = 24;
+    this.isHighlighted = false;
+
+    //NEW
+    // current story assign
+    this.story = musicianStories[storyIndex];
+
+    storyIndex = storyIndex + 1;
+    if (storyIndex >= musicianStories.length) {
+      storyIndex = 0;
+    }
+
+    let freq = notes[noteIndex];
+    noteIndex = noteIndex + 1;
+    if (noteIndex >= notes.length) {
+      noteIndex = 0;
+    }
+
+    this.osc = new p5.Oscillator(random(["sine"]));
+    this.osc.freq(freq);
+    this.osc.amp(0.1);
+    this.osc.start();
+  }
+
+  update() {
+    this.x += this.xSpd + sin(frameCount * 0.02 + this.y) * 0.2;
+    this.y += this.ySpd + cos(frameCount * 0.02 + this.x) * 0.2;
+    let gravity = (height / 2 - this.y) * 0.01;
+    this.y += gravity;
+
+    // looping back wrap
+    if (this.x > width + 50) {
+      this.x = -50;
+    }
+    if (this.x < -50) {
+      this.x = width + 50;
+    }
+    if (this.y > height + 50) {
+      this.y = -50;
+    }
+    if (this.y < -50) {
+      this.y = height + 50;
+    }
+
+    let d = dist(this.x, this.y, mouseX, mouseY);
+    let vol = map(d, 0, 130, 0.3, 0, true);
+    this.osc.amp(vol, 0.1);
+  }
+
+  display() {
+    let pulse = 1 + sin(frameCount * 0.04 + this.x) * 0.2;
+    let fade = map(sin(frameCount * 0.05 + this.y), -1, 1, 150, 255);
+
+    push();
+    if (this.isHighlighted) {
+      fill(255, 255);
+      textSize(this.baseSize * 1.2);
+    } else {
+      fill(255, fade);
+      textSize(this.baseSize * pulse);
+    }
+    noStroke();
+    textAlign(CENTER, CENTER);
+    text(this.char, this.x, this.y);
+    pop();
   }
 }
-//
 
 class MusicLine {
-  constructor(startX, startY, endX, endY) {
+  constructor(startX, startY) {
     this.startX = startX;
     this.startY = startY;
-    this.endX = startX + 1000;
-    this.endY = startY + 500;
+    this.endX = startX + 800;
+    this.endY = startY + 400;
   }
-  //??? not sure how to implement update
-  update() { }
 
   display() {
     noFill();
-    stroke(75);
-    strokeWeight(1.8);
+    //stroke(230, 20, 150, 150);
+    strokeWeight(1.5);
 
     //line template
     beginShape();
@@ -283,15 +365,20 @@ class MusicLine {
       let x = map(i, 0, 120, this.startX, this.endX);
       let y = map(i, 0, 120, this.startY, this.endY);
 
-      let taper = sin(map(i, 0, 99, 0, PI));
-
+      //wave movement
+      let taper = sin(map(i, 0, 149, 0, PI));
+      //mouse interaction
       let d = dist(x, y, mouseX, mouseY);
       let mouseBoost = map(d, 0, 200, 50, 0);
-
       let vibrate = sin(i * 0.2 + frameCount * 0.15) * (50 + mouseBoost);
+      let finalY = y + vibrate * taper;
 
-      vertex(x, y + vibrate * taper);
+      vertex(x, finalY);
     }
+
     endShape();
+    let lineRed = map(storyAlpha, 0, 255, 50, 255);
+    let lineAlpha = map(storyAlpha, 0, 25, 50, 200);
+    stroke(lineRed, 20, 150, lineAlpha);
   }
 }
