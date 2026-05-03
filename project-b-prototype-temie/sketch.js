@@ -270,7 +270,7 @@ class MusicLine {
     this.endY = startY + 500;
   }
   //??? not sure how to implement update
-  update() {}
+  update() { }
 
   display() {
     noFill();
