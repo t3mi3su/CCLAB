@@ -248,6 +248,7 @@ function draw() {
   }
 
   let hovered = false;
+  
   for (let i = 0; i < particles.length; i++) {
     particles[i].update();
     particles[i].display();
