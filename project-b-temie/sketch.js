@@ -1,5 +1,6 @@
 let musicianStories = [
   "hover over the music to begin",
+  "inside this lost recital hall",
 
   "you’re a pianist backstage, about to perform for hundreds of people",
   "back when classical music halls were filled with living, breathing flesh and souls",
@@ -26,7 +27,6 @@ let musicianStories = [
   "my hands don’t feel like mine",
   "my mouth is dry",
   "my sleeve is sticking to my wrist",
-  "i cant do this",
   "i cant do this",
   "i’m wiping my palms every thirty seconds, but they just won’t stay dry",
   "i'm waiting for something terrible to happen so i don't have to go out there",
@@ -76,7 +76,7 @@ let symbols = [
   "♪",
   "‧₊˚♪",
   "♫",
-  "𝄞₊˚⊹˖ ܁",
+  "𝄞₊˚",
   "♬⋆.˚",
   "𝄞⋆˚｡⋆",
   "⊹˚♬₊⋆",
@@ -89,24 +89,26 @@ let symbols = [
   "𝄞₊˚⊹",
   "𝄞⨾♬",
   "♯",
+  "♩", "♭", 
   "⋆.˚‧₊˚♪",
   "𝄞",
   "𝄢",
-  "𝄡",
-  "𝄞𝄢₊˚",
   "♬",
   "♫⋆｡♪",
   "♪⋆｡",
+  "♯", 
+  "♮",
   "♪°",
   "♬⋆｡",
   "♫˚",
-  "♬⋆ ˚｡⋆",
+  "♪", 
+  "♫", 
+  "♬",
   "♪₊˚",
   "♩‧₊˚",
   "♫ ⋆｡˚",
   "♬˙⋆",
   "♬⟡₊˚",
-  "♫✧₊⁺",
   "𝄞⟡⋆",
   "♩｡･:˚",
   "♪｡ﾟ",
@@ -159,16 +161,19 @@ function toggleAudience() {
 
 function mousePressed() {
   //the current symbol from the list
-  let char = symbols[symbolIndex];
 
-  particles.push(new Particle(mouseX, mouseY, char));
+  if (mouseX > 0 && mouseX < width && mouseY > 0 && mouseY < height) {
+    let char = symbols[symbolIndex];
 
-  //move to the next symbol for next time
-  symbolIndex = symbolIndex + 1;
+    particles.push(new Particle(mouseX, mouseY, char));
 
-  //go back to 0
-  if (symbolIndex >= symbols.length) {
-    symbolIndex = 0;
+    //move to the next symbol for next time
+    symbolIndex = symbolIndex + 1;
+
+    //go back to 0
+    if (symbolIndex >= symbols.length) {
+      symbolIndex = 0;
+    }
   }
 }
 
@@ -215,22 +220,28 @@ function setup() {
   }
 
   //button for audience sounds
-
   btn = createButton("𝄞 listen to the hall waiting ♪");
-  btn.position(width / 3, height - 30);
+  btn.parent("p5-canvas-container");
+  //btn.position(266, 440);
   btn.style("background", "transparent");
   btn.style("border", "none");
-  btn.style("color", "rgba(255, 20, 150, 0.6)"); // Faded pink
+  btn.style("color", "#5CD1F2");
   btn.style("font-family", "Georgia, serif");
   btn.style("font-style", "italic");
   btn.style("font-size", "16px");
   btn.style("cursor", "pointer");
   btn.style("letter-spacing", "2px");
+  btn.style('position', 'static'); 
+  btn.style('display', 'block');
+  btn.style('margin', '-30px auto 0 auto');
   btn.mousePressed(toggleAudience);
+
 }
 
 function draw() {
   background(10, 10, 50, 40);
+
+
 
   for (let i = 0; i < lines.length; i++) {
     lines[i].display();
@@ -323,8 +334,8 @@ class Particle {
     }
 
     let d = dist(this.x, this.y, mouseX, mouseY);
-    let vol = map(d, 0, 130, 0.3, 0, true);
-    this.osc.amp(vol, 0.1);
+    let vol = map(d, 0, 90, 0.15, 0, true);
+    this.osc.amp(vol, 0.2);
   }
 
   display() {
